@@ -1,62 +1,77 @@
-RESTAURANTE UNIVERSIT¡RIO ñ PROGRAMA«√O DO CARD¡PIO SEMANAL 
-DIA  
-CARD¡PIO PROGRAMADO 
-SEGUNDA-FEIRA 
-18/12/2023 
-CARNE: Carne moÌda com azeitonas 
-ARROZ BRANCO/INTEGRAL/FEIJ√O PRETO  
-COMPLEMENTO ALMO«O: Macarr„o ao alho e Ûleo com ervas 
-SALADA 1: R˙cula 
-SALADA 2: Rabanete 
-SOBREMESA: Abacaxi em calda                                                        MOLHO SALADA: Molho de ervas 
-TER«A-FEIRA 
-19/12/2023 
-CARNE: Estrogonofe de frango 
-ARROZ BRANCO/INTEGRAL/FEIJ√O CARIOCA 
-COMPLEMENTO ALMO«O: Batata palha 
-SALADA 1: Couve  
-SALADA 2: Cenoura 
-SOBREMESA: Fruta                                                                                   MOLHO SALADA: Vinagrete 
-QUARTA-FEIRA 
-20/12/2023 
-CARNE: Carne de assada panela 
-ARROZ BRANCO/INTEGRAL/FEIJ√O COM VEGETAIS 
-COMPLEMENTO ALMO«O: Polenta 
-SALADA 1: Espinafre 
-SALADA 2: Macarronese 
-SOBREMESA: Fruta                                                                      MOLHO SALADA: Molho de mostarda 
-QUINTA-FEIRA 
-21/12/2023 
-CARNE: FilÈ mignon suÌno ‡ califÛrnia 
-ARROZ BRANCO/INTEGRAL/FEIJ√O PRETO 
-COMPLEMENTO ALMO«O: Batata doce ao forno 
-SALADA 1: ChicÛria 
-SALADA 2: Pepino em conserva 
-SOBREMESA: Bombom                                                                                 MOLHO SALADA: Vinagrete 
-SEXTA-FEIRA 
-22/12/2023 
-CARNE: Sassami de frango empanado 
-ARROZ BRANCO/INTEGRAL/FEIJ√O PRETO 
-COMPLEMENTO ALMO«O: AbÛbora refogada 
-SALADA 1: Alface 
-SALADA 2: Beterraba em conserva 
-SOBREMESA: PÍssego em calda com creme de leite                    MOLHO SALADA: Molho de ervas 
-S¡BADO 
-23/12/2023 
- 
- 
-FECHADO 
- 
- 
-DOMINGO 
-24/12/2023 
- 
- 
-FECHADO 
- 
- 
- 
- 
- 
- 
- 
+Dia da semana: Segunda
+Data: 18/12/2023
+Carne: Carne mo√≠da com azeitonas 
+Carne jantar: Carne mo√≠da com azeitonas 
+Complemento: Macarr√£o ao alho e √≥leo com ervas 
+Complemento jantar: Macarr√£o ao alho e √≥leo com ervas 
+Salada 1: R√∫cula 
+Salada 2: Rabanete 
+Molho salada: Molho de ervas 
+Sobremesa: Abacaxi em calda
+
+Dia da semana: Ter√ßa
+Data: 19/12/2023
+Carne: Estrogonofe de frango 
+Carne jantar: Estrogonofe de frango 
+Complemento: Batata palha 
+Complemento jantar: Batata palha 
+Salada 1: Couve
+Salada 2: Cenoura 
+Molho salada: Vinagrete 
+Sobremesa: Fruta
+
+Dia da semana: Quarta
+Data: 20/12/2023
+Carne: Carne de assada panela 
+Carne jantar: Carne de assada panela 
+Complemento: Polenta 
+Complemento jantar: Polenta 
+Salada 1: Espinafre 
+Salada 2: Macarronese 
+Molho salada: Molho de mostarda 
+Sobremesa: Fruta
+
+Dia da semana: Quinta
+Data: 21/12/2023
+Carne: Fil√© mignon su√≠no √† calif√≥rnia 
+Carne jantar: Fil√© mignon su√≠no √† calif√≥rnia 
+Complemento: Batata doce ao forno 
+Complemento jantar: Batata doce ao forno 
+Salada 1: Chic√≥ria 
+Salada 2: Pepino em conserva 
+Molho salada: Vinagrete 
+Sobremesa: Bombom
+
+Dia da semana: Sexta
+Data: 22/12/2023
+Carne: Sassami de frango empanado 
+Carne jantar: Sassami de frango empanado 
+Complemento: Ab√≥bora refogada 
+Complemento jantar: Ab√≥bora refogada 
+Salada 1: Alface 
+Salada 2: Beterraba em conserva 
+Molho salada: Molho de ervas 
+Sobremesa: P√™ssego em calda com creme de leite
+
+Dia da semana: S√°bado
+Data: 23/12/2023
+Carne: None
+Carne jantar: None
+Complemento: None
+Complemento jantar: None
+Salada 1: None
+Salada 2: None
+Molho salada: None
+Sobremesa: None
+
+Dia da semana: Domingo
+Data: 24/12/2023
+Carne: None
+Carne jantar: None
+Complemento: None
+Complemento jantar: None
+Salada 1: None
+Salada 2: None
+Molho salada: None
+Sobremesa: None
+
