@@ -106,9 +106,32 @@ def process():
 
 
 @app.route('/getCardapio', methods=['POST'])
+def getCardapio():
+    # Lê o arquivo JSON com os links salvos
+    with open('cardapios_salvos.json', 'r') as json_file:
+        cardapios_salvos = json_file.read()
+
+    # Pega primeiro link do JSON
+    cardapio_atual = json.loads(cardapios_salvos)
+    cardapio_atual = list(cardapio_atual.values())[0]
+    print(cardapio_atual)
+
+    try:
+        destino_do_pdf = 'pdf/cardapio.pdf'
+        download_pdf(cardapio_atual, destino_do_pdf)
+        pdf_content = extract_text_from_pdf(destino_do_pdf)
+
+        # Escreve o conteúdo do PDF em um arquivo TXT
+        with open('txt/cardapio.txt', 'w') as txt_file:
+            txt_file.write(pdf_content)
+
+
+
+        return render_template('index.html', result=f"Action successful! Extracted links:\n{cardapios_salvos}")
 
     except Exception as e:
         return render_template('index.html', result=f"Action failed: {str(e)}")
+    
 
 if __name__ == '__main__':
     app.run(debug=True)
