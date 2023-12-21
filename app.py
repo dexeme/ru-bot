@@ -1,6 +1,9 @@
 from flask import Flask, render_template, request
 import requests
 from bs4 import BeautifulSoup
+import json
+import re
+import fitz
 
 app = Flask(__name__)
 
