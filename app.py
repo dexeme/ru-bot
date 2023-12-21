@@ -7,6 +7,13 @@ import fitz
 
 app = Flask(__name__)
 
+def fix_html_encoding(html_content):
+    # Substitui a representação Unicode \u00e0 pelo caractere "à" no HTML
+    html_content = html_content.replace(r'\u00e0', 'à')
+    html_content = html_content.replace(r"%C3%A0", 'à')
+
+
+    return html_content
 @app.route('/')
 def index():
     """
