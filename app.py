@@ -12,8 +12,9 @@ def fix_html_encoding(html_content):
     html_content = html_content.replace(r'\u00e0', 'à')
     html_content = html_content.replace(r"%C3%A0", 'à')
 
-
     return html_content
+
+
 def extract_links_by_week(html_content):
     # Dicionário para armazenar os links por semana
     links_by_week = {}
@@ -73,6 +74,11 @@ def extract_text_from_pdf(pdf_path, page_number=0):
     if 0 <= page_number < doc.page_count:
         page = doc[page_number]
         text = page.get_text()
+
+        text = re.sub(r'(\b\w+?-FEIRA\b)', r'\n\n\1', text)
+        text = re.sub(r'(\bSÁBADO\b)', r'\n\n\1-FEIRA', text)
+        text = re.sub(r'(\bDOMINGO\b)', r'\n\n\1-FEIRA', text)
+        text = re.sub(r'^.*SEGUNDA-FEIRA', r'SEGUNDA-FEIRA', text, flags=re.DOTALL)
     else:
         text = ''
     
@@ -102,8 +108,7 @@ def process():
         return render_template('index.html', result=f"Action successful! Extracted links:\n{cardapios_salvos}")
 
     except Exception as e:
-        return render_template('index.html', result=f"Action failed: {str(e)}")
-
+        return render_template('index.html', result=f"Action failed (1): {str(e)}")
 
 @app.route('/getCardapio', methods=['POST'])
 def getCardapio():
@@ -121,13 +126,82 @@ def getCardapio():
         download_pdf(cardapio_atual, destino_do_pdf)
         pdf_content = extract_text_from_pdf(destino_do_pdf)
 
+        # ------------------------------
+        menu_info = []
+
+        # Padrões de expressões regulares para extrair informações específicas
+        dia_semana_pattern = re.compile(r'(\w+)\-FEIRA', re.IGNORECASE)
+        data_pattern = re.compile(r'(\d{2}/\d{2}/\d{4})', re.IGNORECASE)
+        carne_pattern = re.compile(r'CARNE:\s*(.+)', re.IGNORECASE)
+        carne_jantar_pattern = re.compile(r'CARNE JANTAR:\s*(.+)', re.IGNORECASE)
+        complemento_pattern = re.compile(r'COMPLEMENTO ALMOÇO:\s*(.+)', re.IGNORECASE)
+        complemento_jantar_pattern = re.compile(r'COMPLEMENTO JANTAR:\s*(.+)', re.IGNORECASE)
+        salada1_pattern = re.compile(r'SALADA 1:\s*(.+)', re.IGNORECASE)
+        salada2_pattern = re.compile(r'SALADA 2:\s*(.+)', re.IGNORECASE)
+        molho_salada_pattern = re.compile(r'MOLHO SALADA:\s*(.+)', re.IGNORECASE)
+        sobremesa_pattern = re.compile(r'SOBREMESA:\s*(.+?)\s{2,}', re.IGNORECASE)
+
+        # Dividir o texto em dias
+        dias = pdf_content.split('\n\n')
+
+        # Extrair informações para cada dia
+        for dia in dias:
+            menu_info_dia = {}
+
+            # Encontrar correspondências para cada padrão
+            dia_semana_match = dia_semana_pattern.search(dia)
+            data_match = data_pattern.search(dia)
+            carne_match = carne_pattern.search(dia)
+            carne_jantar_match = carne_jantar_pattern.search(dia)
+            complemento_match = complemento_pattern.search(dia)
+            complemento_jantar_match = complemento_jantar_pattern.search(dia)
+            salada1_match = salada1_pattern.search(dia)
+            salada2_match = salada2_pattern.search(dia)
+            molho_salada_match = molho_salada_pattern.search(dia)
+            sobremesa_match = sobremesa_pattern.search(dia)
+
+            # Função para remover texto após dois espaços consecutivos
+            def remove_text_after_consecutive_spaces(match):
+                if match:
+                    text = match.group(1)
+                    index_of_consecutive_spaces = text.find("  ")
+                    if index_of_consecutive_spaces != -1:
+                        text = text[:index_of_consecutive_spaces]
+                    return text
+                return None
+
+            # Extrair dados correspondentes
+            menu_info_dia["Dia da semana"] = dia_semana_match.group(1).capitalize() if dia_semana_match else None
+            menu_info_dia["Data"] = data_match.group(1) if data_match else None
+            menu_info_dia["Carne"] = remove_text_after_consecutive_spaces(carne_match)
+            menu_info_dia["Carne jantar"] = remove_text_after_consecutive_spaces(carne_jantar_match)
+            if not menu_info_dia["Carne jantar"]:
+                # Se não houver complemento jantar, copie o complemento do almoço
+                menu_info_dia["Carne jantar"] = menu_info_dia["Carne"]
+            else:
+                menu_info_dia["Carne jantar"] = remove_text_after_consecutive_spaces(carne_jantar_match)
+            menu_info_dia["Complemento"] = remove_text_after_consecutive_spaces(complemento_match)
+            menu_info_dia["Complemento jantar"] = remove_text_after_consecutive_spaces(complemento_jantar_match)
+            if not menu_info_dia["Complemento jantar"]:
+                # Se não houver complemento jantar, copie o complemento do almoço
+                menu_info_dia["Complemento jantar"] = menu_info_dia["Complemento"]
+            else:
+                menu_info_dia["Complemento jantar"] = remove_text_after_consecutive_spaces(complemento_jantar_match)
+            menu_info_dia["Salada 1"] = remove_text_after_consecutive_spaces(salada1_match)
+            menu_info_dia["Salada 2"] = remove_text_after_consecutive_spaces(salada2_match)
+            menu_info_dia["Molho salada"] = remove_text_after_consecutive_spaces(molho_salada_match)
+            menu_info_dia["Sobremesa"] = sobremesa_match.group(1) if sobremesa_match else None
+
+            menu_info.append(menu_info_dia)
+
         # Escreve o conteúdo do PDF em um arquivo TXT
-        with open('txt/cardapio.txt', 'w') as txt_file:
-            txt_file.write(pdf_content)
+        with open('txt/cardapio.txt', 'w', encoding='utf-8') as txt_file:
+            for menu in menu_info:
+                for key, value in menu.items():
+                    txt_file.write(f'{key}: {value}\n')
+                txt_file.write('\n')
 
-
-
-        return render_template('index.html', result=f"Action successful! Extracted links:\n{cardapios_salvos}")
+        return render_template('index.html', result=f"Action successful! Extracted text:\n{menu_info}")
 
     except Exception as e:
         return render_template('index.html', result=f"Action failed: {str(e)}")
