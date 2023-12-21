@@ -15,5 +15,16 @@
     <form action="/process" method="post">
         <button type="submit">Default Button</button>
     </form>
+    <form action="/getCardapio" method="post">
+        <button type="submit">Cardapio</button>
+    </form>
+    <h1>
+        {% if cardapio %}
+            {% for item in cardapio %}
+                <p>{{ item }}</p>
+            {% endfor %}
+        {% endif %}
+    </h1>
+
 </body>
 </html>
