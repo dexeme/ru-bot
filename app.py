@@ -86,14 +86,26 @@ def process():
     """
     try:
         # Web scraping logic
-        website_url = 'https://ru.ufsc.br/ru/'  # Replace with the desired website URL
+        website_url = 'https://ru.ufsc.br/ru/'
         response = requests.get(website_url)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        
-        # Example: Extract text from the first paragraph (<p>) found on the website
-        extracted_text = soup.find('p').get_text()
+        html_content = response.text
 
-        return render_template('index.html', result=f"Action successful! Extracted text: {extracted_text}")
+        # Extract links by week
+        links_by_week = extract_links_by_week(html_content)
+
+        # Create a JSON object with the extracted links
+        cardapios_salvos = json.dumps(links_by_week, ensure_ascii=False, indent=2)
+
+        with open('cardapios_salvos.json', 'w') as json_file:
+            json_file.write(cardapios_salvos)   
+
+        return render_template('index.html', result=f"Action successful! Extracted links:\n{cardapios_salvos}")
+
+    except Exception as e:
+        return render_template('index.html', result=f"Action failed: {str(e)}")
+
+
+@app.route('/getCardapio', methods=['POST'])
 
     except Exception as e:
         return render_template('index.html', result=f"Action failed: {str(e)}")
