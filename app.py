@@ -58,6 +58,27 @@ def index():
     """
     return render_template('index.html')
 
+@app.route('/download', methods=['POST'])
+def download_pdf(url, destination):
+    response = requests.get(url, verify=False)
+    
+    with open(destination, 'wb') as pdf_file:
+        pdf_file.write(response.content)
+
+@app.route('/extract', methods=['POST'])
+def extract_text_from_pdf(pdf_path, page_number=0):
+    doc = fitz.open(pdf_path)
+    
+    # Verifique se o número da página fornecido é válido
+    if 0 <= page_number < doc.page_count:
+        page = doc[page_number]
+        text = page.get_text()
+    else:
+        text = ''
+    
+    doc.close()
+    return text
+
 @app.route('/process', methods=['POST'])
 def process():
     """
