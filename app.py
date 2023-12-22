@@ -187,88 +187,96 @@ def extrair_dados_do_PDF(pdf_content):
         menu_info_dia["Sobremesa"] = sobremesa_match.group(1) if sobremesa_match else None
 
         menu_info.append(menu_info_dia)
+        print(menu_info_dia)
 
     return menu_info
 
 @app.route('/getCardapio', methods=['POST'])
 def getCardapio():
 
-    try:
-        # Extrair a data escolhida pelo usuário
-        user_date_str = request.form.get('dataEscolhida')
-        print(f'Data escolhida pelo usuário: {user_date_str}')
+    # Extrair a data escolhida pelo usuário
+    user_date_str = request.form.get('dataEscolhida')
+    print(f'Data escolhida pelo usuário: {user_date_str}')
+
+    # Salva em cardapio_atual o dicionario com as datas e links
+    with open('cardapios_salvos.json', 'r') as json_file:
+        cardapio_atual = json.load(json_file)
+
+    # Se nenhum dataEscolhida for fornecido, defina user_date como a primeira data do JSON
+    if not user_date_str:
+        # Verifique se há pelo menos uma chave no JSON
+        user_date_str = "2023-12-12"
+        if cardapio_atual:
+            user_date_str = list(cardapio_atual.keys())[0]
+            print(f'Usuário não escolheu data, exibindo cardápio mais recente: {user_date_str}')
+        else:
+            return render_template('index.html', result="Nenhuma data disponível no cardápio.")
 
 
-        # Carregar o JSON com os links
-        with open('cardapios_salvos.json', 'r') as json_file:
-            cardapio_atual = json.load(json_file)
+    # Dividir a data usando os caracteres de hífen
+    ano, mes, dia = user_date_str.split('-')
 
-        # Se nenhum dataEscolhida for fornecido, defina user_date como a primeira data do JSON
-        if not user_date_str:
-            # Verifique se há pelo menos uma chave no JSON
-            if cardapio_atual:
-                user_date_str = list(cardapio_atual.keys())[0]
-                print(f'Usuário não escolheu data, exibindo cardápio mais recente: {user_date_str}')
+    # Converter as strings para inteiros
+    ano = int(ano)
+    mes = int(mes)
+    dia = int(dia)
+
+    print(f'Dia: {dia}, Mês: {mes}, Ano: {ano}')
+
+
+    
+
+    # Encontrar o link correspondente na estrutura JSON
+    link_key = None
+    for key in cardapio_atual.keys():
+        dia_de_inicio_do_intervalo = int(key[0:2])
+        mes_de_inicio_do_intervalo = int(key[2:4])
+        ano_de_inicio_do_intervalo = int(key[4:8])
+        dia_de_fim_do_intervalo = int(key[8:10])
+        mes_de_fim_do_intervalo = int(key[10:12])
+        ano_de_fim_do_intervalo = int(key[12:16])
+
+        # Verificar se a data escolhida pelo usuário está dentro do intervalo
+        # sem usar a biblioteca datetime
+        if ano_de_inicio_do_intervalo <= ano <= ano_de_fim_do_intervalo:
+            if mes_de_inicio_do_intervalo != mes_de_fim_do_intervalo:
+                if mes_de_inicio_do_intervalo == mes:
+                    if dia_de_inicio_do_intervalo <= dia:
+                        link_key = key
+                        link = cardapio_atual[link_key]
+                        print(f'Link encontrado para a data escolhida: {link}')
+                        break
+                elif mes_de_fim_do_intervalo == mes:
+                    if dia <= dia_de_fim_do_intervalo:
+                        link_key = key
+                        link = cardapio_atual[link_key]
+                        print(f'Link encontrado para a data escolhida: {link}')
+                        break
             else:
-                return render_template('index.html', result="Nenhuma data disponível no cardápio.")
+                if mes_de_inicio_do_intervalo == mes:
+                    if dia_de_inicio_do_intervalo <= dia <= dia_de_fim_do_intervalo:
+                        link_key = key
+                        link = cardapio_atual[link_key]
+                        print(f'Link encontrado para a data escolhida: {link}')
+                        break
+        else:
+            print(f'Nenhuma data encontrada para a data escolhida: {user_date_str}')
+        
+    cardapio_atual = link
+    destino_do_pdf = 'pdf/cardapio.pdf'
+    download_pdf(cardapio_atual, destino_do_pdf)
+    pdf_content = extract_text_from_pdf(destino_do_pdf)
+    menu_info = extrair_dados_do_PDF(pdf_content)
 
-        # Dividir a data usando os caracteres de hífen
-        ano, mes, dia = user_date_str.split('-')
+    with open('static/cardapio.txt', 'w', encoding='utf-8') as txt_file:
+        for menu in menu_info:
+            for key, value in menu.items():
+                txt_file.write(f'{key}: {value}\n')
+            txt_file.write('\n')
 
-        # Converter as strings para inteiros
-        ano = int(ano)
-        mes = int(mes)
-        dia = int(dia)
 
-        print(f'Dia: {dia}, Mês: {mes}, Ano: {ano}')
+    return render_template('index.html', result=f"Ação bem-sucedida! Texto extraído:\n{menu_info}")
 
-        # Encontrar o link correspondente na estrutura JSON
-        link_key = None
-        for key in cardapio_atual.keys():
-            dia_de_inicio_do_intervalo = int(key[0:2])
-            mes_de_inicio_do_intervalo = int(key[2:4])
-            ano_de_inicio_do_intervalo = int(key[4:8])
-            dia_de_fim_do_intervalo = int(key[8:10])
-            mes_de_fim_do_intervalo = int(key[10:12])
-            ano_de_fim_do_intervalo = int(key[12:16])
-
-            # Verificar se a data escolhida pelo usuário está dentro do intervalo
-            # sem usar a biblioteca datetime
-            if ano_de_inicio_do_intervalo <= ano <= ano_de_fim_do_intervalo:
-                if mes_de_inicio_do_intervalo != mes_de_fim_do_intervalo:
-                    if mes_de_inicio_do_intervalo == mes:
-                        if dia_de_inicio_do_intervalo <= dia:
-                            link_key = key
-                            print(f'Link encontrado para a data escolhida: {link_key}')
-                            break
-                    elif mes_de_fim_do_intervalo == mes:
-                        if dia <= dia_de_fim_do_intervalo:
-                            link_key = key
-                            print(f'Link encontrado para a data escolhida: {link_key}')
-                            break
-                else:
-                    if mes_de_inicio_do_intervalo == mes:
-                        if dia_de_inicio_do_intervalo <= dia <= dia_de_fim_do_intervalo:
-                            link_key = key
-                            print(f'Link encontrado para a data escolhida: {link_key}')
-                            break
-            else:
-                print(f'Nenhuma data encontrada para a data escolhida: {user_date_str}')
-                
-
-        # Extrair o link correspondente
-        link = cardapio_atual[link_key]
-
-        # Extrair o PDF correspondente
-        pdf_content = extract_text_from_pdf(link)
-
-        # Extrair dados do PDF
-        menu_info = extrair_dados_do_PDF(pdf_content)
-
-        return render_template('index.html', result=f"Ação bem-sucedida! Texto extraído:\n{menu_info}")
-
-    except Exception as e:
-        return render_template('index.html', result=f"Ação falhou (2): {str(e)}")
 
 
 if __name__ == '__main__':
