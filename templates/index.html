@@ -1,30 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Default Button</title>
+    <!-- Path: templates/css/style.css -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='/style.css') }}"> 
+    <script src="{{url_for('static', filename='script.js')}}"></script>
+    <title>Cardápio</title>
 </head>
-<body>
-    <h1>Default Button</h1>
-
-    {% if result %}
-        <p>{{ result }}</p>
-    {% endif %}
+<body onload = "carregarCardapio()">
 
     <form action="/process" method="post">
         <button type="submit">Default Button</button>
     </form>
     <form action="/getCardapio" method="post">
-        <button type="submit">Cardapio</button>
+        <!-- Adicione um campo de entrada para a data -->
+        <label for="dataEscolhida">Escolha uma data:</label>
+        <input type="date" id="dataEscolhida" name="dataEscolhida">
+        
+        <button type="submit">Cardápio</button>
     </form>
-    <h1>
-        {% if cardapio %}
-            {% for item in cardapio %}
-                <p>{{ item }}</p>
-            {% endfor %}
-        {% endif %}
-    </h1>
+
+
+    <div id="cardapio-panel">
+        <div><p id="data-atual"></p> <h2>Cardápio de Hoje</h2>
+        </div>
+        <p id="carne">Carne: <span id="carne-placeholder"></span></p>
+        <p id="carne-jantar">Carne Jantar: <span id="carne-jantar-placeholder"></span></p>
+        <p id="complemento">Complemento: <span id="complemento-placeholder"></span></p>
+        <p id="complemento-jantar">Complemento Jantar: <span id="complemento-jantar-placeholder"></span></p>
+        <p id="salada-1">Salada 1: <span id="salada-1-placeholder"></span></p>
+        <p id="salada-2">Salada 2: <span id="salada-2-placeholder"></span></p>
+        <p id="molho-salada">Molho Salada: <span id="molho-salada-placeholder"></span></p>
+        <p id="sobremesa">Sobremesa: <span id="sobremesa-placeholder"></span></p>
+        <button onclick="carregarCardapio()">Cardápio de Hoje</button>
+    </div>
+    
+
+    <script>
+
+    </script>
 
 </body>
 </html>

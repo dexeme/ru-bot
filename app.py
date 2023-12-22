@@ -5,7 +5,7 @@ import json
 import re
 import fitz
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', template_folder='templates')
 
 def fix_html_encoding(html_content):
     # Substitui a representação Unicode \u00e0 pelo caractere "à" no HTML
@@ -195,7 +195,7 @@ def getCardapio():
             menu_info.append(menu_info_dia)
 
         # Escreve o conteúdo do PDF em um arquivo TXT
-        with open('txt/cardapio.txt', 'w', encoding='utf-8') as txt_file:
+        with open('static/cardapio.txt', 'w', encoding='utf-8') as txt_file:
             for menu in menu_info:
                 for key, value in menu.items():
                     txt_file.write(f'{key}: {value}\n')
