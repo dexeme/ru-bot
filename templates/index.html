@@ -8,20 +8,15 @@
     <script src="{{url_for('static', filename='script.js')}}"></script>
     <title>Cardápio</title>
 </head>
-<body onload = "carregarCardapio()">
+<body>
 
     <form action="/process" method="post">
-        <button type="submit">Default Button</button>
+        <button type="submit">Default Buttasdasdasdon</button>
     </form>
     <form action="/getCardapio" method="post">
-        <!-- Adicione um campo de entrada para a data -->
-        <label for="dataEscolhida">Escolha uma data:</label>
-        <input type="date" id="dataEscolhida" name="dataEscolhida">
-        
-        <button type="submit">Cardápio</button>
+        <button type="submit">Cardapio</button>
     </form>
-
-
+    
     <div id="cardapio-panel">
         <div><p id="data-atual"></p> <h2>Cardápio de Hoje</h2>
         </div>
@@ -36,6 +31,14 @@
         <button onclick="carregarCardapio()">Cardápio de Hoje</button>
     </div>
     
+    <form action="/getCardapio" method="post">
+        <!-- Adicione um campo de entrada para a data -->
+        <label for="dataEscolhida">Escolha uma data:</label>
+        <input type="date" id="dataEscolhida" name="dataEscolhida" value="aaaa">
+        
+        <!-- Adicione um botão de envio do formulário -->
+        <button type="submit">Cardápio Enviar</button>
+    </form>
 
     <script>
 
