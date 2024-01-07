@@ -1,77 +1,76 @@
 Dia da semana: Segunda
-Data: 18/12/2023
-Carne: Carne moída com azeitonas 
-Carne jantar: Carne moída com azeitonas 
-Complemento: Macarrão ao alho e óleo com ervas 
-Complemento jantar: Macarrão ao alho e óleo com ervas 
-Salada 1: Rúcula 
-Salada 2: Rabanete 
+Data: 11/12/2023
+Carne: Sobrecoxa de frango 
+Carne jantar: Sobrecoxa de frango 
+Complemento: Ratatouille 
+Complemento jantar: None
+Salada 1: Chicória 
+Salada 2: Pepino 
 Molho salada: Molho de ervas 
-Sobremesa: Abacaxi em calda
+Sobremesa: Fruta
 
 Dia da semana: Terça
-Data: 19/12/2023
-Carne: Estrogonofe de frango 
-Carne jantar: Estrogonofe de frango 
+Data: 12/12/2023
+Carne: Carne de panela 
+Carne jantar: Carne de panela 
 Complemento: Batata palha 
-Complemento jantar: Batata palha 
-Salada 1: Couve
+Complemento jantar: None
+Salada 1: Repolho verde 
+Salada 2: Beterraba 
+Molho salada: Molho de ervas 
+Sobremesa: Fruta
+
+Dia da semana: Quarta
+Data: 13/12/2023
+Carne: Sassami de frango empanado 
+Carne jantar: Sassami de frango empanado 
+Complemento: Grão de bico refogado 
+Complemento jantar: None
+Salada 1: Alface 
 Salada 2: Cenoura 
 Molho salada: Vinagrete 
 Sobremesa: Fruta
 
-Dia da semana: Quarta
-Data: 20/12/2023
-Carne: Carne de assada panela 
-Carne jantar: Carne de assada panela 
-Complemento: Polenta 
-Complemento jantar: Polenta 
-Salada 1: Espinafre 
-Salada 2: Macarronese 
+Dia da semana: Quinta
+Data: 14/12/2023
+Carne: Bife bovino acebolado 
+Carne jantar: Bife bovino acebolado 
+Complemento: Batata doce 
+Salada 1: Agrião 
+Salada 2: Beterraba 
 Molho salada: Molho de mostarda 
 Sobremesa: Fruta
 
-Dia da semana: Quinta
-Data: 21/12/2023
-Carne: Filé mignon suíno à califórnia 
-Carne jantar: Filé mignon suíno à califórnia 
-Complemento: Batata doce ao forno 
-Complemento jantar: Batata doce ao forno 
-Salada 1: Chicória 
-Salada 2: Pepino em conserva 
-Molho salada: Vinagrete 
-Sobremesa: Bombom
-
 Dia da semana: Sexta
-Data: 22/12/2023
-Carne: Sassami de frango empanado 
-Carne jantar: Sassami de frango empanado 
-Complemento: Abóbora refogada 
-Complemento jantar: Abóbora refogada 
-Salada 1: Alface 
-Salada 2: Beterraba em conserva 
+Data: 15/12/2023
+Carne: Iscas de frango ao molho curry 
+Carne jantar: Iscas de frango ao molho curry 
+Complemento: Cenoura cozida 
+Complemento jantar: None
+Salada 1: Acelga 
+Salada 2: Rabanete 
 Molho salada: Molho de ervas 
-Sobremesa: Pêssego em calda com creme de leite
+Sobremesa: Fruta
 
 Dia da semana: Sábado
-Data: 23/12/2023
-Carne: None
-Carne jantar: None
-Complemento: None
+Data: 16/12/2023
+Carne: Carne de panela 
+Carne jantar: Carne de panela 
+Complemento: Mandioquinha 
 Complemento jantar: None
-Salada 1: None
-Salada 2: None
-Molho salada: None
-Sobremesa: None
+Salada 1: Agrião 
+Salada 2: Beterraba 
+Molho salada: Molho de mostarda 
+Sobremesa: Fruta
 
 Dia da semana: Domingo
-Data: 24/12/2023
+Data: 17/12/2023
 Carne: None
-Carne jantar: None
-Complemento: None
+Carne jantar: Frango com linguiça
+Complemento: Cenoura e vagem cozida 
 Complemento jantar: None
-Salada 1: None
-Salada 2: None
-Molho salada: None
-Sobremesa: None
+Salada 1: Acelga 
+Salada 2: Rabanete 
+Molho salada: Molho de ervas 
+Sobremesa: Fruta
 

@@ -10,6 +10,32 @@ body {
     height: 100vh;
 }
 
+/* Estilo para o input de data */
+input[type="date"] {
+    appearance: none;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* Ajuste para o formato brasileiro DD/MM/YYYY */
+input[type="date"]::-webkit-datetime-edit-day-field,
+input[type="date"]::-webkit-datetime-edit-month-field,
+input[type="date"]::-webkit-datetime-edit-year-field {
+    padding: 5px;
+}
+
+input[type="date"]::-webkit-datetime-edit-text {
+    color: transparent;
+    padding: 0;
+}
+
+input[type="date"]::-webkit-inner-spin-button,
+input[type="date"]::-webkit-calendar-picker-indicator {
+    display: none;
+}
+
 #cardapio-panel {
     background-color: #fff;
     padding: 20px;
@@ -47,3 +73,4 @@ body {
 #cardapio-panel button:hover {
     background-color: #45a049;
 }
+

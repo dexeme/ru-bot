@@ -16,8 +16,6 @@ def fix_html_encoding(html_content):
 
     return html_content
 
-
-
 def extract_links_by_week(html_content):
     # Dicionário para armazenar os links por semana
     links_by_week = {}
@@ -31,18 +29,14 @@ def extract_links_by_week(html_content):
     # Encontrar o elemento com a classe 'content clearfix'
     content_element = soup.find(class_='content clearfix')
 
-    ano = datetime.datetime.now().year
-
     if content_element:
         # Encontrar todos os elementos <li> dentro do elemento com a classe 'content clearfix'
         li_elements = content_element.find_all('li')
 
         for li_element in li_elements:
             # Extrair o intervalo de datas usando regex
-            # Exemplo: "03 a 09.ABR" -> 03abr09abr
             match = re.match(r'(\d{2})(?:\.(\w{3}))? a (\d{2})\.(\w{3})', li_element.get_text())
             meses = {mes[:3]: f"{str(i).zfill(2)}" for i, mes in enumerate(["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"], start=1)}
-           
 
             if match:
                 inicio_dia, inicio_mes, fim_dia, fim_mes = match.groups()
@@ -50,18 +44,24 @@ def extract_links_by_week(html_content):
                 if not inicio_mes:
                     inicio_mes = fim_mes
 
-                data = f"{inicio_dia}{meses[inicio_mes.lower()]}{ano}{fim_dia}{meses[fim_mes.lower()]}{ano}"
-                print(data)
                 # Encontrar o elemento <a> dentro do elemento <li>
                 link_element = li_element.find('a')
                 if link_element:
                     # Corrigir a codificação do link usando a biblioteca html
                     link = link_element['href']
 
+                    # Extrair o ano do link
+                    match_ano = re.search(r'/(\d{4})/', link)
+                    ano = int(match_ano.group(1)) if match_ano else datetime.datetime.now().year
+
+                    data = f"{inicio_dia}{meses[inicio_mes.lower()]}{ano}{fim_dia}{meses[fim_mes.lower()]}{ano}"
+                    print(data)
+
                     # Adicionar o link ao dicionário usando a chave "data"
                     links_by_week[data] = link
 
     return links_by_week
+
 @app.route('/')
 def index():
     """
@@ -128,7 +128,8 @@ def extrair_dados_do_PDF(pdf_content):
     data_pattern = re.compile(r'(\d{2}/\d{2}/\d{4})', re.IGNORECASE)
     carne_pattern = re.compile(r'CARNE:\s*(.+)', re.IGNORECASE)
     carne_jantar_pattern = re.compile(r'CARNE JANTAR:\s*(.+)', re.IGNORECASE)
-    complemento_pattern = re.compile(r'COMPLEMENTO ALMOÇO:\s*(.+)', re.IGNORECASE)
+    complemento_pattern = re.compile(r'COMPLEMENTO:\s*(.+)', re.IGNORECASE)
+    complemento_almoco_pattern = re.compile(r'COMPLEMENTO ALMOÇO:\s*(.+)', re.IGNORECASE)
     complemento_jantar_pattern = re.compile(r'COMPLEMENTO JANTAR:\s*(.+)', re.IGNORECASE)
     salada1_pattern = re.compile(r'SALADA 1:\s*(.+)', re.IGNORECASE)
     salada2_pattern = re.compile(r'SALADA 2:\s*(.+)', re.IGNORECASE)
@@ -148,6 +149,7 @@ def extrair_dados_do_PDF(pdf_content):
         carne_match = carne_pattern.search(dia)
         carne_jantar_match = carne_jantar_pattern.search(dia)
         complemento_match = complemento_pattern.search(dia)
+        complemento_almoco_match = complemento_almoco_pattern.search(dia)
         complemento_jantar_match = complemento_jantar_pattern.search(dia)
         salada1_match = salada1_pattern.search(dia)
         salada2_match = salada2_pattern.search(dia)
@@ -168,28 +170,42 @@ def extrair_dados_do_PDF(pdf_content):
         menu_info_dia["Dia da semana"] = dia_semana_match.group(1).capitalize() if dia_semana_match else None
         menu_info_dia["Data"] = data_match.group(1) if data_match else None
         menu_info_dia["Carne"] = remove_text_after_consecutive_spaces(carne_match)
+
+        if not menu_info_dia["Carne"]:
+            menu_info_dia["Carne"] = None
         menu_info_dia["Carne jantar"] = remove_text_after_consecutive_spaces(carne_jantar_match)
         if not menu_info_dia["Carne jantar"]:
             # Se não houver complemento jantar, copie o complemento do almoço
             menu_info_dia["Carne jantar"] = menu_info_dia["Carne"]
-        else:
-            menu_info_dia["Carne jantar"] = remove_text_after_consecutive_spaces(carne_jantar_match)
         menu_info_dia["Complemento"] = remove_text_after_consecutive_spaces(complemento_match)
-        menu_info_dia["Complemento jantar"] = remove_text_after_consecutive_spaces(complemento_jantar_match)
-        if not menu_info_dia["Complemento jantar"]:
-            # Se não houver complemento jantar, copie o complemento do almoço
-            menu_info_dia["Complemento jantar"] = menu_info_dia["Complemento"]
-        else:
-            menu_info_dia["Complemento jantar"] = remove_text_after_consecutive_spaces(complemento_jantar_match)
+        if not menu_info_dia["Complemento"]:
+            # Se não houver complemento, verifique os específicos de almoço e jantar
+            menu_info_dia["Complemento"] = remove_text_after_consecutive_spaces(complemento_almoco_match)
+            if not menu_info_dia["Complemento"]:
+                menu_info_dia["Complemento"] = remove_text_after_consecutive_spaces(complemento_jantar_match)
+                # Se não houver complemento jantar, copie o complemento do almoço
+                if not menu_info_dia["Complemento"]:
+                    menu_info_dia["Complemento jantar"] = menu_info_dia["Complemento"]
         menu_info_dia["Salada 1"] = remove_text_after_consecutive_spaces(salada1_match)
+        if not menu_info_dia["Salada 1"]:
+            menu_info_dia["Salada 1"] = None
         menu_info_dia["Salada 2"] = remove_text_after_consecutive_spaces(salada2_match)
+        if not menu_info_dia["Salada 2"]:
+            menu_info_dia["Salada 2"] = None
         menu_info_dia["Molho salada"] = remove_text_after_consecutive_spaces(molho_salada_match)
+        if not menu_info_dia["Molho salada"]:
+            menu_info_dia["Molho salada"] = None
         menu_info_dia["Sobremesa"] = sobremesa_match.group(1) if sobremesa_match else None
+        if not menu_info_dia["Sobremesa"]:
+            menu_info_dia["Sobremesa"] = None
 
         menu_info.append(menu_info_dia)
         print(menu_info_dia)
 
     return menu_info
+
+
+
 
 @app.route('/getCardapio', methods=['POST'])
 def getCardapio():
@@ -205,13 +221,12 @@ def getCardapio():
     # Se nenhum dataEscolhida for fornecido, defina user_date como a primeira data do JSON
     if not user_date_str:
         # Verifique se há pelo menos uma chave no JSON
-        user_date_str = "2023-12-12"
+        recent_data = list(cardapio_atual.keys())[0] if cardapio_atual else None
         if cardapio_atual:
             user_date_str = list(cardapio_atual.keys())[0]
-            print(f'Usuário não escolheu data, exibindo cardápio mais recente: {user_date_str}')
+            print(f'Usuário não escolheu data, exibindo cardápio mais recente: {recent_data}')
         else:
             return render_template('index.html', result="Nenhuma data disponível no cardápio.")
-
 
     # Dividir a data usando os caracteres de hífen
     ano, mes, dia = user_date_str.split('-')
@@ -222,9 +237,6 @@ def getCardapio():
     dia = int(dia)
 
     print(f'Dia: {dia}, Mês: {mes}, Ano: {ano}')
-
-
-    
 
     # Encontrar o link correspondente na estrutura JSON
     link_key = None
@@ -261,7 +273,7 @@ def getCardapio():
                         break
         else:
             print(f'Nenhuma data encontrada para a data escolhida: {user_date_str}')
-        
+
     cardapio_atual = link
     destino_do_pdf = 'pdf/cardapio.pdf'
     download_pdf(cardapio_atual, destino_do_pdf)
@@ -273,7 +285,6 @@ def getCardapio():
             for key, value in menu.items():
                 txt_file.write(f'{key}: {value}\n')
             txt_file.write('\n')
-
 
     return render_template('index.html', result=f"Ação bem-sucedida! Texto extraído:\n{menu_info}")
 
