@@ -1,0 +1,5 @@
+gunicorn==19.10.0
+beautifulsoup4==4.9.3
+fitz==0.0.1.dev2
+Flask==1.1.4
+Requests==2.27.1

@@ -1,3 +1,4 @@
+# coding=utf-8
 import datetime
 from io import BytesIO
 from flask import Flask, render_template, request
@@ -36,7 +37,9 @@ def extract_links_by_week(html_content):
         for li_element in li_elements:
             # Extrair o intervalo de datas usando regex
             match = re.match(r'(\d{2})(?:\.(\w{3}))? a (\d{2})\.(\w{3})', li_element.get_text())
-            meses = {mes[:3]: f"{str(i).zfill(2)}" for i, mes in enumerate(["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"], start=1)}
+            meses = {}
+            for i, mes in enumerate(["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"], start=1):
+                meses[mes[:3]] = str(i).zfill(2)
 
             if match:
                 inicio_dia, inicio_mes, fim_dia, fim_mes = match.groups()
@@ -54,7 +57,7 @@ def extract_links_by_week(html_content):
                     match_ano = re.search(r'/(\d{4})/', link)
                     ano = int(match_ano.group(1)) if match_ano else datetime.datetime.now().year
 
-                    data = f"{inicio_dia}{meses[inicio_mes.lower()]}{ano}{fim_dia}{meses[fim_mes.lower()]}{ano}"
+                    data = "{}{}{}{}{}{}".format(inicio_dia, meses[inicio_mes.lower()], ano, fim_dia, meses[fim_mes.lower()], ano)
                     print(data)
 
                     # Adicionar o link ao dicionário usando a chave "data"
@@ -115,10 +118,12 @@ def process():
         with open('cardapios_salvos.json', 'w') as json_file:
             json_file.write(cardapios_salvos)   
 
-        return render_template('index.html', result=f"Action successful! Extracted links:\n{cardapios_salvos}")
+        return render_template('index.html', result="Action successful! Extracted links:\n{}".format(cardapios_salvos))
+
 
     except Exception as e:
-        return render_template('index.html', result=f"Action failed (1): {str(e)}")
+        # Return an error message in case of an error
+        return render_template('index.html', result="An error occurred: {}".format(e))
 
 def extrair_dados_do_PDF(pdf_content):
     menu_info = []
@@ -212,7 +217,6 @@ def getCardapio():
 
     # Extrair a data escolhida pelo usuário
     user_date_str = request.form.get('dataEscolhida')
-    print(f'Data escolhida pelo usuário: {user_date_str}')
 
     # Salva em cardapio_atual o dicionario com as datas e links
     with open('cardapios_salvos.json', 'r') as json_file:
@@ -224,7 +228,6 @@ def getCardapio():
         recent_data = list(cardapio_atual.keys())[0] if cardapio_atual else None
         if cardapio_atual:
             user_date_str = list(cardapio_atual.keys())[0]
-            print(f'Usuário não escolheu data, exibindo cardápio mais recente: {recent_data}')
         else:
             return render_template('index.html', result="Nenhuma data disponível no cardápio.")
 
@@ -235,8 +238,6 @@ def getCardapio():
     ano = int(ano)
     mes = int(mes)
     dia = int(dia)
-
-    print(f'Dia: {dia}, Mês: {mes}, Ano: {ano}')
 
     # Encontrar o link correspondente na estrutura JSON
     link_key = None
@@ -256,24 +257,22 @@ def getCardapio():
                     if dia_de_inicio_do_intervalo <= dia:
                         link_key = key
                         link = cardapio_atual[link_key]
-                        print(f'Link encontrado para a data escolhida: {link}')
+
                         break
                 elif mes_de_fim_do_intervalo == mes:
                     if dia <= dia_de_fim_do_intervalo:
                         link_key = key
                         link = cardapio_atual[link_key]
-                        print(f'Link encontrado para a data escolhida: {link}')
                         break
             else:
                 if mes_de_inicio_do_intervalo == mes:
                     if dia_de_inicio_do_intervalo <= dia <= dia_de_fim_do_intervalo:
                         link_key = key
                         link = cardapio_atual[link_key]
-                        print(f'Link encontrado para a data escolhida: {link}')
                         break
         else:
-            print(f'Nenhuma data encontrada para a data escolhida: {user_date_str}')
-
+            continue
+            
     cardapio_atual = link
     destino_do_pdf = 'pdf/cardapio.pdf'
     download_pdf(cardapio_atual, destino_do_pdf)
@@ -283,10 +282,11 @@ def getCardapio():
     with open('static/cardapio.txt', 'w', encoding='utf-8') as txt_file:
         for menu in menu_info:
             for key, value in menu.items():
-                txt_file.write(f'{key}: {value}\n')
+                txt_file.write('{}: {}\n'.format(key, value))
             txt_file.write('\n')
 
-    return render_template('index.html', result=f"Ação bem-sucedida! Texto extraído:\n{menu_info}")
+    return render_template('index.html', result="Ação bem-sucedida! Texto extraído:\n{}".format(menu_info))
+
 
 
 

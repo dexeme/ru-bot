@@ -1,76 +1,70 @@
 Dia da semana: Segunda
-Data: 11/12/2023
-Carne: Sobrecoxa de frango 
-Carne jantar: Sobrecoxa de frango 
-Complemento: Ratatouille 
-Complemento jantar: None
-Salada 1: Chicória 
-Salada 2: Pepino 
-Molho salada: Molho de ervas 
+Data: 13/11/2023
+Carne: Bife bovino 
+Carne jantar: Bife bovino 
+Complemento: Vagem 
+Salada 1: Agrião 
+Salada 2: Rabanete 
+Molho salada: Vinagrete 
 Sobremesa: Fruta
 
 Dia da semana: Terça
-Data: 12/12/2023
-Carne: Carne de panela 
-Carne jantar: Carne de panela 
-Complemento: Batata palha 
-Complemento jantar: None
-Salada 1: Repolho verde 
-Salada 2: Beterraba 
-Molho salada: Molho de ervas 
+Data: 14/11/2023
+Carne: Iscas de frango ao molho de mostarda 
+Carne jantar: Iscas de frango ao molho de mostarda 
+Complemento: Mandioquinha 
+Salada 1: Alface 
+Salada 2: Cenoura 
+Molho salada: Molho de mostarda 
 Sobremesa: Fruta
 
 Dia da semana: Quarta
-Data: 13/12/2023
-Carne: Sassami de frango empanado 
-Carne jantar: Sassami de frango empanado 
-Complemento: Grão de bico refogado 
-Complemento jantar: None
-Salada 1: Alface 
-Salada 2: Cenoura 
+Data: 15/11/2023
+Carne: Carne moída com azeitonas
+Carne jantar: Carne moída com azeitonas
+Complemento: Farofa 
+Salada 1: Repolho roxo 
+Salada 2: Pepino 
 Molho salada: Vinagrete 
 Sobremesa: Fruta
 
 Dia da semana: Quinta
-Data: 14/12/2023
-Carne: Bife bovino acebolado 
-Carne jantar: Bife bovino acebolado 
-Complemento: Batata doce 
-Salada 1: Agrião 
-Salada 2: Beterraba 
+Data: 16/11/2023
+Carne: Frango com linguiça 
+Carne jantar: Frango com linguiça 
+Complemento: Batata palha 
+Salada 1: Acelga 
+Salada 2: Cenoura 
 Molho salada: Molho de mostarda 
 Sobremesa: Fruta
 
 Dia da semana: Sexta
-Data: 15/12/2023
-Carne: Iscas de frango ao molho curry 
-Carne jantar: Iscas de frango ao molho curry 
-Complemento: Cenoura cozida 
-Complemento jantar: None
-Salada 1: Acelga 
-Salada 2: Rabanete 
+Data: 17/11/2023
+Carne: Sobrecoxa de frango 
+Carne jantar: Sobrecoxa de frango 
+Complemento: Ratatouille 
+Salada 1: Couve 
+Salada 2: Cenoura 
 Molho salada: Molho de ervas 
 Sobremesa: Fruta
 
 Dia da semana: Sábado
-Data: 16/12/2023
-Carne: Carne de panela 
-Carne jantar: Carne de panela 
-Complemento: Mandioquinha 
-Complemento jantar: None
-Salada 1: Agrião 
-Salada 2: Beterraba 
-Molho salada: Molho de mostarda 
+Data: 18/11/2023
+Carne: Sobrecoxa de frango 
+Carne jantar: Sobrecoxa de frango 
+Complemento: Ratatouille 
+Salada 1: Couve 
+Salada 2: Cenoura 
+Molho salada: Vinagrete 
 Sobremesa: Fruta
 
 Dia da semana: Domingo
-Data: 17/12/2023
-Carne: None
-Carne jantar: Frango com linguiça
-Complemento: Cenoura e vagem cozida 
-Complemento jantar: None
-Salada 1: Acelga 
-Salada 2: Rabanete 
+Data: 19/11/2023
+Carne: Omelete com tomate e cenoura 
+Carne jantar: Omelete com tomate e cenoura 
+Complemento: Ratatouille 
+Salada 1: Chicória 
+Salada 2: Brócolis 
 Molho salada: Molho de ervas 
 Sobremesa: Fruta
 
