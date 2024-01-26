@@ -1,6 +1,5 @@
 # coding=utf-8
 import datetime
-from io import BytesIO
 from flask import Flask, render_template, request
 import requests
 from bs4 import BeautifulSoup
@@ -212,25 +211,20 @@ def extrair_dados_do_PDF(pdf_content):
 
 
 
-@app.route('/getCardapio', methods=['POST'])
-def getCardapio():
-
+def get_user_date():
     # Extrair a data escolhida pelo usuário
     user_date_str = request.form.get('dataEscolhida')
 
+    return user_date_str
+
+def load_cardapio_atual():
     # Salva em cardapio_atual o dicionario com as datas e links
     with open('cardapios_salvos.json', 'r') as json_file:
         cardapio_atual = json.load(json_file)
 
-    # Se nenhum dataEscolhida for fornecido, defina user_date como a primeira data do JSON
-    if not user_date_str:
-        # Verifique se há pelo menos uma chave no JSON
-        recent_data = list(cardapio_atual.keys())[0] if cardapio_atual else None
-        if cardapio_atual:
-            user_date_str = list(cardapio_atual.keys())[0]
-        else:
-            return render_template('index.html', result="Nenhuma data disponível no cardápio.")
+    return cardapio_atual
 
+def find_link_in_interval(cardapio_atual, user_date_str):
     # Dividir a data usando os caracteres de hífen
     ano, mes, dia = user_date_str.split('-')
 
@@ -272,23 +266,44 @@ def getCardapio():
                         break
         else:
             continue
-            
-    cardapio_atual = link
+
+    return link
+
+def download_and_extract_pdf(link):
     destino_do_pdf = 'pdf/cardapio.pdf'
-    download_pdf(cardapio_atual, destino_do_pdf)
+    download_pdf(link, destino_do_pdf)
     pdf_content = extract_text_from_pdf(destino_do_pdf)
     menu_info = extrair_dados_do_PDF(pdf_content)
 
+    return menu_info
+
+def save_menu_info_to_file(menu_info):
     with open('static/cardapio.txt', 'w', encoding='utf-8') as txt_file:
         for menu in menu_info:
             for key, value in menu.items():
                 txt_file.write('{}: {}\n'.format(key, value))
             txt_file.write('\n')
 
+@app.route('/getCardapio', methods=['POST'])
+def getCardapio():
+    user_date_str = get_user_date()
+
+    cardapio_atual = load_cardapio_atual()
+
+    if not user_date_str:
+        recent_data = list(cardapio_atual.keys())[0] if cardapio_atual else None
+        if cardapio_atual:
+            user_date_str = list(cardapio_atual.keys())[0]
+        else:
+            return render_template('index.html', result="Nenhuma data disponível no cardápio.")
+
+    link = find_link_in_interval(cardapio_atual, user_date_str)
+
+    menu_info = download_and_extract_pdf(link)
+
+    save_menu_info_to_file(menu_info)
+
     return render_template('index.html', result="Ação bem-sucedida! Texto extraído:\n{}".format(menu_info))
-
-
-
 
 if __name__ == '__main__':
     app.run(debug=True)
