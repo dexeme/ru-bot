@@ -1,6 +1,6 @@
 gunicorn==19.10.0
 beautifulsoup4==4.9.3
-PyMuPDFb==1.23.20
+pdfplumber==0.10.3
 Flask==3.0.1
 Requests==2.27.1
 click==7.1.2

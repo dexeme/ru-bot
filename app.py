@@ -5,7 +5,8 @@ import requests
 from bs4 import BeautifulSoup
 import json
 import re
-import fitz
+import pdfplumber
+
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
@@ -80,22 +81,23 @@ def download_pdf(url, destination):
 
 @app.route('/extract', methods=['POST'])
 def extract_text_from_pdf(pdf_path, page_number=0):
-    doc = fitz.open(pdf_path)
+    # Abrir o arquivo PDF usando pdfplumber
+    with pdfplumber.open(pdf_path) as pdf:
+        # Verificar se o número da página fornecido é válido
+        if 0 <= page_number < len(pdf.pages):
+            page = pdf.pages[page_number]
+            text = page.extract_text()
 
-    # Verifique se o número da página fornecido é válido
-    if 0 <= page_number < doc.page_count:
-        page = doc[page_number]
-        text = page.get_text()
+            # Aplicar substituições de texto necessárias
+            text = re.sub(r'(\b\w+?-FEIRA\b)', r'\n\n\1', text)
+            text = re.sub(r'(\bSÁBADO\b)', r'\n\n\1-FEIRA', text)
+            text = re.sub(r'(\bDOMINGO\b)', r'\n\n\1-FEIRA', text)
+            text = re.sub(r'^.*SEGUNDA-FEIRA', r'SEGUNDA-FEIRA', text, flags=re.DOTALL)
+        else:
+            text = ''
 
-        text = re.sub(r'(\b\w+?-FEIRA\b)', r'\n\n\1', text)
-        text = re.sub(r'(\bSÁBADO\b)', r'\n\n\1-FEIRA', text)
-        text = re.sub(r'(\bDOMINGO\b)', r'\n\n\1-FEIRA', text)
-        text = re.sub(r'^.*SEGUNDA-FEIRA', r'SEGUNDA-FEIRA', text, flags=re.DOTALL)
-    else:
-        text = ''
-
-    doc.close()
     return text
+
 
 @app.route('/process', methods=['POST'])
 def process():
