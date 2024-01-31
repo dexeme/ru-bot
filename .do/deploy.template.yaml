@@ -1,0 +1,7 @@
+spec:
+  name: ru-bot
+  services:
+  - name: web
+    git:
+      branch: main
+      repo_clone_url: https://github.com/dexeme/ru-bot
