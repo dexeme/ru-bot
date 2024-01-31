@@ -81,7 +81,7 @@ def download_pdf(url, destination):
 @app.route('/extract', methods=['POST'])
 def extract_text_from_pdf(pdf_path, page_number=0):
     doc = fitz.open(pdf_path)
-    
+
     # Verifique se o número da página fornecido é válido
     if 0 <= page_number < doc.page_count:
         page = doc[page_number]
@@ -93,7 +93,7 @@ def extract_text_from_pdf(pdf_path, page_number=0):
         text = re.sub(r'^.*SEGUNDA-FEIRA', r'SEGUNDA-FEIRA', text, flags=re.DOTALL)
     else:
         text = ''
-    
+
     doc.close()
     return text
 
