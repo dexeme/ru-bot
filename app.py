@@ -208,9 +208,6 @@ def extrair_dados_do_PDF(pdf_content):
 
     return menu_info
 
-
-
-
 def get_user_date():
     # Extrair a data escolhida pelo usuário
     user_date_str = request.form.get('dataEscolhida')

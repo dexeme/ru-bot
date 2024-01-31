@@ -1,0 +1,6 @@
+name: ru-bot
+services:
+- name: web
+  github:
+    repo: dexeme/ru-bot
+    branch: main
