@@ -112,6 +112,18 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     background-color: #45a049;
 }
 
+/* --------- TÍTULO: Cardápio de hoje --------- */
+
+/* --------- DIA DA SEMANA --------- */
+
+#diaSemana-placeholder {
+    font-size: 16px; /* Tamanho da fonte */
+    padding: 5px; /* Adiciona um espaçamento interno ao redor do texto */
+    border-radius: 5px; /* Adiciona bordas arredondadas */
+}
+
+/* --------- DIA DA SEMANA --------- */
+
 /* --------- BOTÕES DIURNO E NOTURNO --------- */
 
 .toggle-buttons {
@@ -219,20 +231,36 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     align-items: center;
     margin-bottom: 10px; /* Espaço entre as linhas */
     border-bottom: 1px solid rgb(175, 175, 175);
-    width: 400px; /* Largura fixa para a linha */
+    width: 500px; /* Largura fixa para a linha */
 }
 
+/* Estilizar ícones em todos os itens da lista */
+.list-item > .label > .icon {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+  
+
 .label {
-    width: 100px; /* Largura do rótulo */
+    width: 200px; /* Largura do rótulo */
     font-weight: 600;
     color: rgb(60, 91, 152);
     margin-right: 100px; /* Espaço entre o rótulo e o texto */
+    display: flex;
+    align-items: center;
 }
 
 .titulo {
     width: 500px; /* Largura do título */
     margin-left: 10px; /* Espaço entre o título e o texto */
 }
+
+.placeholder {
+    color: rgb(60, 91, 152);
+    margin-left: -50px;
+}
+
+  
 
 /* --------- LISTA DE COMIDAS --------- */
 

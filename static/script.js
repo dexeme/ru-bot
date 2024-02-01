@@ -3,6 +3,20 @@ function atualizarFront(data, cardapioPanel) {
     const dias_da_semana = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
     const data_atual_formatada = `${(data.getDate()+1).toString().padStart(2, '0')}/${(data.getMonth() + 1).toString().padStart(2, '0')}/${data.getFullYear()}`;
     const dia_semana_atual = dias_da_semana[data.getDay()];
+    
+    diaSemanaPlaceholder = document.getElementById('diaSemana-placeholder');
+    carnePlaceholder = document.getElementById('carne-placeholder');
+    if (dia_semana_atual === 'Sábado' || dia_semana_atual === 'Domingo') {
+        diaSemanaPlaceholder.textContent = dia_semana_atual;
+    }
+    else if (diaSemanaPlaceholder.textContent = dia_semana_atual + '-feira') {
+        diaSemanaPlaceholder.textContent = dia_semana_atual + '-feira';
+    } else if (carnePlaceholder === null) {
+        diaSemanaPlaceholder.textContent = 'Indisponível';
+    }
+    // Seta o texto do placeholder do dia da semana para o dia_semana_atual
+    
+
 
 
     const diurnoButton = document.getElementById('diurno');
@@ -30,6 +44,7 @@ function atualizarFront(data, cardapioPanel) {
                         blocoAtual += linha + '\n';
                         complementoJantar = '';
                         carneJantar = '';
+                        diaSemana = '';
                         if (linha.trim() === '') {
                             const linhasBloco = blocoAtual.split('\n');
                             for (const linhaBloco of linhasBloco) {
@@ -57,42 +72,48 @@ function atualizarFront(data, cardapioPanel) {
                                 } else if (linhaBloco.includes("Sobremesa: ")) {
                                     cardapioPanel.sobremesaPlaceholder.textContent = 'Carregando...';
                                     sobremesa = linhaBloco.substring(11);
+
                                 }
                             }
                             console.log(carne, carneJantar, complemento, complementoJantar, salada1, salada2, molho, sobremesa);
 
                             if (carne === "None" && complemento === "None" && salada1 === "None" && salada2 === "None" && molho === "None" && sobremesa === "None") {
-                                console.log('null');
-                                // TODO: Adicionar mensagem de erro / cardápio não disponível
+                                cardapioPanel.carnePlaceholder.textContent = 'Indisponível';
+                                cardapioPanel.complementoPlaceholder.textContent = 'Indisponível';
+                                cardapioPanel.salada1Placeholder.textContent = 'Indisponível';
+                                cardapioPanel.salada2Placeholder.textContent = 'Indisponível';
+                                cardapioPanel.molhoPlaceholder.textContent = 'Indisponível';
+                                cardapioPanel.sobremesaPlaceholder.textContent = 'Indisponível';
                                 return;
                             }
 
                             if (carne === "None") {
-                                carne = 'Não disponível';
+                                carne = 'Não especificado';
                             }
                             if (complemento === "None" && complementoJantar === "None") {
-                                complemento = 'Não disponível';
+                                complemento = 'Não especificado';
                             }
                             if (salada1 === "None") {
-                                salada1 = 'Não disponível';
+                                salada1 = 'Não especificado';
                             }
                             if (salada2 === "None") {
-                                salada2 = 'Não disponível';
+                                salada2 = 'Não especificado';
                             }
                             if (molho === "None") {
-                                molho = 'Não disponível';
+                                molho = 'Não especificado';
                             }
                             if (sobremesa === "None") {
-                                sobremesa = 'Não disponível';
+                                sobremesa = 'Não especificado';
                             }
                             if (carneJantar === "None" && carne === "None") {
-                                carne = 'Não disponível';
+                                carne = 'Não especificado';
                             }
                             if (complementoJantar === "None" && complemento == "None") {
-                                complemento = 'Não disponível';
+                                complemento = 'Não especificado';
                             }
 
                             
+
                             if (diurno) {
                                 cardapioPanel.carnePlaceholder.textContent = carne;
                                 cardapioPanel.complementoPlaceholder.textContent = complemento;
@@ -120,7 +141,9 @@ function atualizarFront(data, cardapioPanel) {
             }
         })
         .catch(error => {
-            console.error('Erro ao carregar o cardápio:', error);
+            console.error('Erro ao carregar o cardápiossssssss:', error);
+            diaSemanaPlaceholder.textContent = 'Indisponível';
+
         });
 }
 
@@ -147,6 +170,7 @@ function carregarCardapio() {
     console.log('Carregando cardápio...');
     var dataEscolhida = document.getElementById('dataEscolhida').value;
     var cardapioPanel = {
+
         carboidratoPlaceholder: document.getElementById('carboidrato-placeholder'),
         graoPlaceholder: document.getElementById('grao-placeholder'),
         complementoPlaceholder: document.getElementById('complemento-placeholder'),
@@ -185,7 +209,13 @@ function carregarCardapio() {
             if (xhr.status === 200) {
                 atualizarFront(new Date(dataEscolhida), cardapioPanel);
             } else {
-                console.error('Erro ao carregar cardápio.');
+                console.error('Erro ao carregar cardápiosdsdsdsd.');
+                cardapioPanel.carnePlaceholder.textContent = 'Indisponível';
+                cardapioPanel.complementoPlaceholder.textContent = 'Indisponível';
+                cardapioPanel.salada1Placeholder.textContent = 'Indisponível';
+                cardapioPanel.salada2Placeholder.textContent = 'Indisponível';
+                cardapioPanel.molhoPlaceholder.textContent = 'Indisponível';
+                cardapioPanel.sobremesaPlaceholder.textContent = 'Indisponível';
             }
         }
     };

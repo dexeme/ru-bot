@@ -1,77 +1,77 @@
 Dia da semana: Segunda
-Data: 21/08/2023
-Carne: Bife bovino
-Carne jantar: Bife bovino
-Complemento: Batata palha
-Complemento jantar: Creme de milho
-Salada 1: Agrião
-Salada 2: Beterraba
-Molho salada: Vinagrete
-Sobremesa: Laranja
+Data: 29/01/2024
+Carne: Sobrecoxa de frango
+Carne jantar: Sobrecoxa de frango
+Complemento: Lentilha refogada
+Complemento jantar: Lentilha refogada
+Salada 1: Chicória
+Salada 2: Cenoura
+Molho salada: Molho de ervas
+Sobremesa: Mamão
 
 Dia da semana: Terça
-Data: 22/08/2023
-Carne: Frango acebolado com curry
-Carne jantar: Frango acebolado com curry
+Data: 30/01/2024
+Carne: Picadinho de carne
+Carne jantar: Picadinho de carne
+Complemento: Couve-flor
+Complemento jantar: Couve-flor
+Salada 1: Chicória
+Salada 2: Rabanete
+Molho salada: Vinagrete
+Sobremesa: Melão
+
+Dia da semana: Quarta
+Data: 31/01/2024
+Carne: Filé mignon suíno acebolado
+Carne jantar: Filé mignon suíno acebolado
+Complemento: Macarrão integral ao alho e óleo
+Complemento jantar: Macarrão integral ao alho e óleo
+Salada 1: Agrião
+Salada 2: Cenoura
+Molho salada: Molho de mostarda
+Sobremesa: Banana
+
+Dia da semana: Quinta
+Data: 01/02/2024
+Carne: Bife acebolado
+Carne jantar: Bife acebolado
 Complemento: Mandioquinha
 Complemento jantar: Mandioquinha
 Salada 1: Alface
-Salada 2: Cenoura
-Molho salada: Molho de mostarda
-Sobremesa: Banana
-
-Dia da semana: Quarta
-Data: 23/08/2023
-Carne: Iscas de carne ao molho agridoce
-Carne jantar: Iscas de carne ao molho agridoce
-Complemento: Farofa
-Complemento jantar: Farofa
-Salada 1: Rúcula
 Salada 2: Pepino
-Molho salada: Vinagrete
-Sobremesa: Maçã
-
-Dia da semana: Quinta
-Data: 24/08/2023
-Carne: Iscas de frango com linguiça
-Carne jantar: Iscas de frango com linguiça
-Complemento: Abóbora
-Complemento jantar: Abóbora
-Salada 1: Acelga
-Salada 2: Beterraba
-Molho salada: Molho de mostarda
-Sobremesa: Banana
+Molho salada: Molho de ervas
+Sobremesa: Melão
 
 Dia da semana: Sexta
-Data: 25/08/2023
-Carne: Sobrecoxa de frango
-Carne jantar: Sobrecoxa de frango
-Complemento: Ratatouille
-Complemento jantar: Sopa de legumes
-Salada 1: Couve folha
-Salada 2: Cenoura
-Molho salada: Molho de ervas
-Sobremesa: Laranja
+Data: 02/02/2024
+Carne: Estrogonofe de frango
+Carne jantar: Estrogonofe de frango
+Complemento: Batata palha
+Complemento jantar: Batata palha
+Salada 1: Rúcula
+Salada 2: Rabanete
+Molho salada: Molho de mostarda
+Sobremesa: Banana
 
 Dia da semana: Sábado
-Data: 26/08/2023
-Carne: Omelete com tomate e milho
-Carne jantar: Omelete com tomate e milho
-Complemento: Abóbora
-Complemento jantar: Abóbora
-Salada 1: Chicória
-Salada 2: Maionese de batatas
-Molho salada: Molho de mostarda
-Sobremesa: Maçã
-
-Dia da semana: Domingo
-Data: 27/08/2023
-Carne: Carne moída
-Carne jantar: Carne moída
-Complemento: Macarrão integral alho e óleo
-Complemento jantar: Macarrão integral alho e óleo
+Data: 03/02/2024
+Carne: None
+Carne jantar: None
+Complemento: None
+Complemento jantar: None
 Salada 1: None
 Salada 2: None
-Molho salada: Molho de ervas
-Sobremesa: Banana
+Molho salada: None
+Sobremesa: None
+
+Dia da semana: Domingo
+Data: 04/02/2024
+Carne: None
+Carne jantar: None
+Complemento: None
+Complemento jantar: None
+Salada 1: None
+Salada 2: None
+Molho salada: None
+Sobremesa: None
 
