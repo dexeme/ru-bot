@@ -122,20 +122,16 @@ function atualizarFront(data, cardapioPanel) {
         .catch(error => {
             console.error('Erro ao carregar o cardápio:', error);
         });
-
-    cardapioPanel.dataAtual.textContent = `Hoje é ${dia_semana_atual}, ${data_atual_formatada}`;
 }
 
 function carregarLinks() {
     console.log('Carregando links...');
-    var linksPanel = document.getElementById('links-panel');
     var url = '/process';
     var xhr = new XMLHttpRequest();
 
     xhr.onreadystatechange = function () {
         if (xhr.readyState === XMLHttpRequest.DONE) {
             if (xhr.status === 200) {
-                linksPanel.innerHTML = xhr.responseText;
             } else {
                 console.error('Erro ao carregar links.');
             }
