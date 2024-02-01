@@ -161,7 +161,6 @@ function carregarCardapio() {
         sobremesaPlaceholder: document.getElementById('sobremesa-placeholder'),
         dataAtual: document.getElementById('data-atual')
     };
-
     if (!dataEscolhida) {
         console.log('Nenhuma data escolhida. Usando data atual.');
         var hoje = new Date();
@@ -258,4 +257,25 @@ function toggleActiveClass() {
 function inicio() {
     toggleActiveClass();
     carregarLinks();
+    var dataEscolhida = document.getElementById('dataEscolhida').value;
+    if (!dataEscolhida) {
+        console.log('Nenhuma data escolhida. Usando data atual.');
+        var hoje = new Date();
+        var dd = hoje.getDate();
+        var mm = hoje.getMonth() + 1; //Janeiro é 0!
+        var yyyy = hoje.getFullYear();
+
+        if (dd < 10) {
+            dd = '0' + dd;
+        }
+
+        if (mm < 10) {
+            mm = '0' + mm;
+        }
+
+        dataEscolhida = yyyy + '-' + mm + '-' + dd;
+    }
+    document.getElementById('dataEscolhida').value = dataEscolhida;
+    carregarCardapio();
+
 }
