@@ -60,6 +60,38 @@ function atualizarFront(data, cardapioPanel) {
                                 }
                             }
                             console.log(carne, carneJantar, complemento, complementoJantar, salada1, salada2, molho, sobremesa);
+
+                            if (carne === "None" && complemento === "None" && salada1 === "None" && salada2 === "None" && molho === "None" && sobremesa === "None") {
+                                console.log('null');
+                                // TODO: Adicionar mensagem de erro / cardápio não disponível
+                                return;
+                            }
+
+                            if (carne === "None") {
+                                carne = 'Não disponível';
+                            }
+                            if (complemento === "None" && complementoJantar === "None") {
+                                complemento = 'Não disponível';
+                            }
+                            if (salada1 === "None") {
+                                salada1 = 'Não disponível';
+                            }
+                            if (salada2 === "None") {
+                                salada2 = 'Não disponível';
+                            }
+                            if (molho === "None") {
+                                molho = 'Não disponível';
+                            }
+                            if (sobremesa === "None") {
+                                sobremesa = 'Não disponível';
+                            }
+                            if (carneJantar === "None" && carne === "None") {
+                                carne = 'Não disponível';
+                            }
+                            if (complementoJantar === "None" && complemento == "None") {
+                                complemento = 'Não disponível';
+                            }
+
                             
                             if (diurno) {
                                 cardapioPanel.carnePlaceholder.textContent = carne;
@@ -186,6 +218,39 @@ function toggleActiveClass() {
         diurnoButton.classList.remove('active');
         carregarCardapio();
     });
+
+    document.getElementById('proximo').addEventListener('click', function() {
+        // Obtém a data selecionada no input
+        var dataEscolhida = document.getElementById('dataEscolhida').value;
+        
+        // Cria um objeto Date com a data selecionada
+        var data = new Date(dataEscolhida);
+        
+        // Adiciona 1 dia à data
+        data.setDate(data.getDate() + 1);
+        
+        // Atualiza o valor do input com a nova data
+        document.getElementById('dataEscolhida').value = data.toISOString().split('T')[0];
+
+        carregarCardapio();
+    });
+    
+    document.getElementById('anterior').addEventListener('click', function() {
+        // Obtém a data selecionada no input
+        var dataEscolhida = document.getElementById('dataEscolhida').value;
+        
+        // Cria um objeto Date com a data selecionada
+        var data = new Date(dataEscolhida);
+        
+        // Subtrai 1 dia da data
+        data.setDate(data.getDate() - 1);
+        
+        // Atualiza o valor do input com a nova data
+        document.getElementById('dataEscolhida').value = data.toISOString().split('T')[0];
+
+        carregarCardapio();
+    });
+    
 
     
 }
