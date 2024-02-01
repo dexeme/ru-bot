@@ -140,7 +140,8 @@ def extrair_dados_do_PDF(pdf_content):
     salada1_pattern = re.compile(r'SALADA 1:\s*(.+)', re.IGNORECASE)
     salada2_pattern = re.compile(r'SALADA 2:\s*(.+)', re.IGNORECASE)
     molho_salada_pattern = re.compile(r'MOLHO SALADA:\s*(.+)', re.IGNORECASE)
-    sobremesa_pattern = re.compile(r'SOBREMESA:\s*(.+?)\s{2,}', re.IGNORECASE)
+    sobremesa_pattern = re.compile(r'SOBREMESA:\s*(.+?)(?=\s*MOLHO)', re.IGNORECASE)
+
 
     # Dividir o texto em dias
     dias = pdf_content.split('\n\n')
@@ -209,9 +210,11 @@ def extrair_dados_do_PDF(pdf_content):
         menu_info_dia["Molho salada"] = remove_text_after_consecutive_spaces(molho_salada_match)
         if not menu_info_dia["Molho salada"]:
             menu_info_dia["Molho salada"] = None
-        menu_info_dia["Sobremesa"] = sobremesa_match.group(1) if sobremesa_match else None
+
+        menu_info_dia["Sobremesa"] = remove_text_after_consecutive_spaces(sobremesa_match)
         if not menu_info_dia["Sobremesa"]:
             menu_info_dia["Sobremesa"] = None
+
 
         menu_info.append(menu_info_dia)
         print(menu_info_dia)
