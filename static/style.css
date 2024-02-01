@@ -36,6 +36,44 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     display: none;
 }
 
+.list-item {
+    border-bottom: 2px solid #1e88e5; /* Linha azul escura separando os itens */
+    padding: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.list-item-icon {
+    margin-right: 10px;
+    width: 30px; /* Largura do ícone */
+    height: 30px; /* Altura do ícone */
+}
+
+.list-item-content {
+    flex-grow: 1;
+}
+
+/* --------- TÍTULO: Cardápio de hoje --------- */
+
+.cardapio-panel {
+    display: flex;
+    align-items: center;
+}
+
+.cardapio-panel #icone-cardapio-de-hoje {
+    /* Adicione estilos específicos para o ícone, se necessário */
+    width: 20; /* Largura desejada */
+    height: 20px; /* Altura desejada */
+    margin-top: 10px;
+    margin-right: 10px; /* Espaçamento entre o ícone e o texto */
+}
+
+.cardapio-panel h2 {
+    font-family: 'Roboto', sans-serif;
+}
+
+/* --------- TÍTULO: Cardápio de hoje --------- */
+
 #cardapio-panel {
     background-color: #fff;
     padding: 20px;
@@ -73,4 +111,128 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 #cardapio-panel button:hover {
     background-color: #45a049;
 }
+
+/* --------- BOTÕES DIURNO E NOTURNO --------- */
+
+.toggle-buttons {
+    display: flex;
+}
+
+.toggle-button {
+    border-radius: 30px; /* Bordas arredondadas para torná-lo cilíndrico */
+    border: none;
+    background-color: rgb(156, 173, 206);
+    color: #fff; /* Cor do texto */
+    padding: 5px 20px; /* Diminuir o espaçamento interno vertical */
+    margin-right: 10px; /* Espaçamento entre os botões */
+    cursor: pointer; /* Alterar o cursor para indicar que é clicável */
+    width: 140px; /* Largura dos botões */
+    line-height: 1.5; /* Definir line-height para 1.5 para diminuir a altura do cilindro */
+    background-repeat: no-repeat; /* Não repetir o ícone no fundo */
+    background-position: 10px center; /* Posição do ícone na esquerda */
+    font-family: 'Roboto', sans-serif; /* Aplicar a fonte Roboto */
+    font-size: 16px;
+}
+
+.toggle-button.active {
+    background-color: rgb(37, 71, 138) /* Cor de fundo quando o botão está ativo */
+}
+
+#diurno {
+    background-image: url('../static/icones/sol.svg'); /* Adicione o ícone desejado antes do texto */
+}
+
+#noturno {
+    background-image: url('../static/icones/lua.svg'); /* Adicione o ícone desejado antes do texto */
+}
+
+/* --------- BOTÕES DIURNO E NOTURNO --------- */
+
+
+
+/* --------- BOTÕES PRÓXIMO E ANTERIOR + SELETOR DE DATA --------- */
+
+
+.button-group {
+    display: flex;
+    justify-content: center; /* Centralizar os botões */
+    align-items: center; /* Alinhar verticalmente */
+}
+
+.date-button {
+    border: none;
+    background-color: #cccccc00;
+    color: rgb(37, 71, 138);
+    padding: 10px 40px; /* Espaçamento interno com espaço para o ícone na esquerda e direita */
+    border-radius: 20px;
+    cursor: pointer;
+    margin-right: 20px; /* Espaçamento entre os botões */
+    font-family: 'Roboto', sans-serif; /* Aplicar a fonte Roboto */
+    font-size: 13px;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.calendar-button {
+    border: none;
+    background-color: #cccccc00;
+    color: rgb(37, 71, 138);
+    padding: 10px 40px; /* Espaçamento interno com espaço para o ícone na esquerda e direita */
+    border-radius: 20px;
+    cursor: pointer;
+    margin-right: 20px; /* Espaçamento entre os botões */
+    font-family: 'Roboto', sans-serif; /* Aplicar a fonte Roboto */
+    font-size: 15px;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.icon-container {
+    position: absolute;
+    left: 10px; /* Posiciona o ícone à esquerda do texto */
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.icon-container img {
+    width: 15px; /* Tamanho do ícone */
+}
+
+.date-button#anterior .icon-container img {
+    transform: rotate(180deg); /* Inverte a seta apenas no botão Anterior */
+}
+
+.date-button#proximo .icon-container {
+    left: auto; /* Posiciona o ícone à direita do texto apenas no botão Próximo */
+    right: 10px;
+}
+
+/* --------- BOTÕES PRÓXIMO E ANTERIOR + SELETOR DE DATA --------- */
+
+
+/* --------- LISTA DE COMIDAS --------- */
+
+.list-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px; /* Espaço entre as linhas */
+    border-bottom: 1px solid rgb(175, 175, 175);
+    width: 400px; /* Largura fixa para a linha */
+}
+
+.label {
+    width: 100px; /* Largura do rótulo */
+    font-weight: 600;
+    color: rgb(60, 91, 152);
+    margin-right: 100px; /* Espaço entre o rótulo e o texto */
+}
+
+.titulo {
+    width: 500px; /* Largura do título */
+    margin-left: 10px; /* Espaço entre o título e o texto */
+}
+
+/* --------- LISTA DE COMIDAS --------- */
 

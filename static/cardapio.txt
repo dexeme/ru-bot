@@ -1,71 +1,77 @@
 Dia da semana: Segunda
-Data: 22/01/2024
-Carne: Frango acebolado ao molho agridoce 
-Carne jantar: Frango acebolado ao molho agridoce 
-Complemento: Mandioquinha 
-Salada 1: Agrião 
-Salada 2: Cenoura ralada 
-Molho salada: Molho de ervas 
-Sobremesa: Mamão
+Data: 21/08/2023
+Carne: Bife bovino
+Carne jantar: Bife bovino
+Complemento: Batata palha
+Complemento jantar: Creme de milho
+Salada 1: Agrião
+Salada 2: Beterraba
+Molho salada: Vinagrete
+Sobremesa: Laranja
 
 Dia da semana: Terça
-Data: 23/01/2024
-Carne: None
-Carne jantar: None
-Complemento: None
-Complemento jantar: None
-Salada 1: None
-Salada 2: None
-Molho salada: None
-Sobremesa: None
+Data: 22/08/2023
+Carne: Frango acebolado com curry
+Carne jantar: Frango acebolado com curry
+Complemento: Mandioquinha
+Complemento jantar: Mandioquinha
+Salada 1: Alface
+Salada 2: Cenoura
+Molho salada: Molho de mostarda
+Sobremesa: Banana
 
 Dia da semana: Quarta
-Data: 24/01/2024
-Carne: Picadinho de carne 
-Carne jantar: Picadinho de carne 
-Complemento: Abobrinha ao forno 
-Salada 1: Rúcula 
-Salada 2: Pepino 
-Molho salada: Vinagrete 
-Sobremesa: Melão
+Data: 23/08/2023
+Carne: Iscas de carne ao molho agridoce
+Carne jantar: Iscas de carne ao molho agridoce
+Complemento: Farofa
+Complemento jantar: Farofa
+Salada 1: Rúcula
+Salada 2: Pepino
+Molho salada: Vinagrete
+Sobremesa: Maçã
 
 Dia da semana: Quinta
-Data: 25/01/2024
-Carne: Bisteca suína com abacaxi 
-Carne jantar: Bisteca suína com abacaxi 
-Complemento: Creme de milho 
-Salada 1: Acelga 
-Salada 2: Rabanete 
-Molho salada: Molho de ervas 
+Data: 24/08/2023
+Carne: Iscas de frango com linguiça
+Carne jantar: Iscas de frango com linguiça
+Complemento: Abóbora
+Complemento jantar: Abóbora
+Salada 1: Acelga
+Salada 2: Beterraba
+Molho salada: Molho de mostarda
 Sobremesa: Banana
 
 Dia da semana: Sexta
-Data: 26/01/2024
-Carne: Carne acebolada 
-Carne jantar: Carne acebolada 
-Complemento: Brócolis 
-Salada 1: Chicória 
-Salada 2: Cenoura ralada 
-Molho salada: Vinagrete 
-Sobremesa: Abacaxi
+Data: 25/08/2023
+Carne: Sobrecoxa de frango
+Carne jantar: Sobrecoxa de frango
+Complemento: Ratatouille
+Complemento jantar: Sopa de legumes
+Salada 1: Couve folha
+Salada 2: Cenoura
+Molho salada: Molho de ervas
+Sobremesa: Laranja
 
 Dia da semana: Sábado
-Data: 27/01/2024
-Carne: Carne moída com azeitonas 
-Carne jantar: Carne moída com azeitonas 
-Complemento: Macarrão integral com ervas 
-Salada 1: Agrião 
-Salada 2: Pepino 
-Molho salada: Molho de ervas 
-Sobremesa: Abacaxi
+Data: 26/08/2023
+Carne: Omelete com tomate e milho
+Carne jantar: Omelete com tomate e milho
+Complemento: Abóbora
+Complemento jantar: Abóbora
+Salada 1: Chicória
+Salada 2: Maionese de batatas
+Molho salada: Molho de mostarda
+Sobremesa: Maçã
 
 Dia da semana: Domingo
-Data: 28/01/2024
-Carne: Carne assada de panela 
-Carne jantar: Carne assada de panela 
-Complemento: Lentilha refogada 
-Salada 1: Brócolis 
+Data: 27/08/2023
+Carne: Carne moída
+Carne jantar: Carne moída
+Complemento: Macarrão integral alho e óleo
+Complemento jantar: Macarrão integral alho e óleo
+Salada 1: None
 Salada 2: None
-Molho salada: Molho de mostarda 
-Sobremesa: Abacaxi
+Molho salada: Molho de ervas
+Sobremesa: Banana
 
