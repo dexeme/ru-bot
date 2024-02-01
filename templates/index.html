@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Path: templates/css/style.css -->
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css', _external=True, _scheme='http') }}"> 
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css', _external=True, _scheme='https') }}"> 
     <script src="{{ url_for('static', filename='script.js', _external=True, _scheme='https') }}"></script>
     
     <title>Cardápio</title>
 </head>
-<body onload="main()">
+<body onload="inicio()">
     
 
     <div id="cardapio-panel" class="cardapio-panel">
-        <img src="{{ url_for('static', filename='icones/faca_e_colher.svg', _external=True, _scheme='http') }}" alt="icon-colher-faca" id="icone-cardapio-de-hoje">
+        <img src="{{ url_for('static', filename='icones/faca_e_colher.svg', _external=True, _scheme='https') }}" alt="icon-colher-faca" id="icone-cardapio-de-hoje">
         <h2>Cardápio de Hoje</h2>
     </div>
     

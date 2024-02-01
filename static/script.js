@@ -255,7 +255,7 @@ function toggleActiveClass() {
     
 }
 
-function main() {
+function inicio() {
     toggleActiveClass();
     carregarLinks();
 }
