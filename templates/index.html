@@ -4,31 +4,98 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Path: templates/css/style.css -->
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css', _external=True, _scheme='https') }}"> 
-    <script src="{{ url_for('static', filename='script.js', _external=True, _scheme='https') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css', _external=True, _scheme='http') }}"> 
+    <script src="{{ url_for('static', filename='script.js', _external=True, _scheme='http') }}"></script>
     
     <title>Cardápio</title>
 </head>
-<body onload="carregarLinks()">
+<body onload="main()">
     
-    <div id="cardapio-panel">
-        <div>
-            <p id="data-atual"></p>
-        </div>
-        <div>
-            <h2>Cardápio de Hoje</h2>
-        </div>
-        <p id="carne">Carne: <span id="carne-placeholder"></span></p>
-        <p id="carne-jantar">Carne Jantar: <span id="carne-jantar-placeholder"></span></p>
-        <p id="complemento">Complemento: <span id="complemento-placeholder"></span></p>
-        <p id="complemento-jantar">Complemento Jantar: <span id="complemento-jantar-placeholder"></span></p>
-        <p id="salada-1">Salada 1: <span id="salada-1-placeholder"></span></p>
-        <p id="salada-2">Salada 2: <span id="salada-2-placeholder"></span></p>
-        <p id="molho-salada">Molho Salada: <span id="molho-salada-placeholder"></span></p>
-        <p id="sobremesa">Sobremesa: <span id="sobremesa-placeholder"></span></p>
-        <button onclick="carregarCardapio()">Cardápio de Hoje</button>
+
+    <div id="cardapio-panel" class="cardapio-panel">
+        <img src="{{ url_for('static', filename='icones/faca_e_colher.svg', _external=True, _scheme='http') }}" alt="icon-colher-faca" id="icone-cardapio-de-hoje">
+        <h2>Cardápio de Hoje</h2>
     </div>
+    
+        <div class="toggle-buttons">
+            <button class="toggle-button" id="diurno">Diurno</button>
+            <button class="toggle-button" id="noturno">Noturno</button>
+        </div>
+    
+        <div class="button-group">
+            <button class="date-button" id="anterior">
+                <div class="icon-container">
+                    <img src="../static/icones/seta.svg" alt="Ícone de seta">
+                </div>
+                Anterior
+            </button>
+            <button class="calendar-button" id="calendario">
+                <div class="icon-container">
+                    <img src="../static/icones/calendario.svg" alt="Ícone de calendário">
+                </div>
+                <span>31/01/2024</span>
+            </button>
+            <button class="date-button" id="proximo">
+                <div class="icon-container">
+                    <img src="../static/icones/seta.svg" alt="Ícone de seta">
+                </div>
+                Próximo
+            </button>
+        </div>
+
         
+        <div class="list-container" id="listContainer">
+            <div class="list-item" id="carboidrato">
+                <span class="label">Carboidrato: </span>
+                <div class="placeholder-container">
+                    <span id="carboidrato-placeholder" class="placeholder"></span>
+                    <div class="placeholder-line"></div>
+                </div>
+            </div>
+            <div class="list-item" id="complemento">
+                <span class="label">Complemento: </span>
+                <div class="placeholder-container">
+                    <span id="complemento-placeholder" class="placeholder"></span>
+                    <div class="placeholder-line"></div>
+                </div>
+            </div>
+            <div class="list-item" id="carne">
+                <span class="label">Carne: </span>
+                <div class="placeholder-container">
+                    <span id="carne-placeholder" class="placeholder"></span>
+                    <div class="placeholder-line"></div>
+                </div>
+            </div>
+            <div class="list-item" id="salada1">
+                <span class="label">Salada 1: </span>
+                <div class="placeholder-container">
+                    <span id="salada-1-placeholder" class="placeholder"></span>
+                    <div class="placeholder-line"></div>
+                </div>
+            </div>
+            <div class="list-item" id="salada2">
+                <span class="label">Salada 2: </span>
+                <div class="placeholder-container">
+                    <span id="salada-2-placeholder" class="placeholder"></span>
+                    <div class="placeholder-line"></div>
+                </div>
+            </div>
+            <div class="list-item" id="molho">
+                <span class="label">Molho: </span>
+                <div class="placeholder-container">
+                    <span id="molho-placeholder" class="placeholder"></span>
+                    <div class="placeholder-line"></div>
+                </div>
+            </div>
+            <div class="list-item" id="sobremesa">
+                <span class="label">Sobremesa: </span>
+                <div class="placeholder-container">
+                    <span id="sobremesa-placeholder" class="placeholder"></span>
+                    <div class="placeholder-line"></div>
+                </div>
+            </div>
+
+
     <form action="/getCardapio" method="post">
         <!-- Adicione um campo de entrada para a data -->
         <input type="date" id="dataEscolhida" name="dataEscolhida" value="aaaa">
