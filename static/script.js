@@ -183,7 +183,6 @@ function carregarCardapio() {
     xhr.onreadystatechange = function () {
         if (xhr.readyState === XMLHttpRequest.DONE) {
             if (xhr.status === 200) {
-                cardapioPanel.carnePlaceholder.innerHTML = xhr.responseText;
                 atualizarFront(new Date(dataEscolhida), cardapioPanel);
             } else {
                 console.error('Erro ao carregar cardápio.');
