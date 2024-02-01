@@ -179,10 +179,12 @@ def extrair_dados_do_PDF(pdf_content):
 
         if not menu_info_dia["Carne"]:
             menu_info_dia["Carne"] = None
+
         menu_info_dia["Carne jantar"] = remove_text_after_consecutive_spaces(carne_jantar_match)
         if not menu_info_dia["Carne jantar"]:
             # Se não houver complemento jantar, copie o complemento do almoço
             menu_info_dia["Carne jantar"] = menu_info_dia["Carne"]
+
         menu_info_dia["Complemento"] = remove_text_after_consecutive_spaces(complemento_match)
         if not menu_info_dia["Complemento"]:
             # Se não houver complemento, verifique os específicos de almoço e jantar
@@ -192,6 +194,12 @@ def extrair_dados_do_PDF(pdf_content):
                 # Se não houver complemento jantar, copie o complemento do almoço
                 if not menu_info_dia["Complemento"]:
                     menu_info_dia["Complemento jantar"] = menu_info_dia["Complemento"]
+        
+        menu_info_dia["Complemento jantar"] = remove_text_after_consecutive_spaces(complemento_jantar_match)
+        if not menu_info_dia["Complemento jantar"]:
+            # Se não houver complemento jantar, copie o complemento do almoço
+            menu_info_dia["Complemento jantar"] = menu_info_dia["Complemento"]
+
         menu_info_dia["Salada 1"] = remove_text_after_consecutive_spaces(salada1_match)
         if not menu_info_dia["Salada 1"]:
             menu_info_dia["Salada 1"] = None
