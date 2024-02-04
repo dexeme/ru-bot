@@ -141,6 +141,9 @@ def extrair_dados_do_PDF(pdf_content):
     salada2_pattern = re.compile(r'SALADA 2:\s*(.+)', re.IGNORECASE)
     molho_salada_pattern = re.compile(r'MOLHO SALADA:\s*(.+)', re.IGNORECASE)
     sobremesa_pattern = re.compile(r'SOBREMESA:\s*(.+?)(?=\s*MOLHO)', re.IGNORECASE)
+    arroz_feijao_pattern = re.compile(r'ARROZ\s+(BRANCO\s*(?:\/\s*INTEGRAL)?)\s*\/?\s*FEIJÃO\s+(PRETO|CARIOCA|COM\s+VEGETAIS)?', re.IGNORECASE)
+
+
 
 
     # Dividir o texto em dias
@@ -162,6 +165,7 @@ def extrair_dados_do_PDF(pdf_content):
         salada2_match = salada2_pattern.search(dia)
         molho_salada_match = molho_salada_pattern.search(dia)
         sobremesa_match = sobremesa_pattern.search(dia)
+        arroz_feijao_match = arroz_feijao_pattern.search(dia)
 
         # Função para remover texto após dois espaços consecutivos
         def remove_text_after_consecutive_spaces(match):
@@ -170,7 +174,7 @@ def extrair_dados_do_PDF(pdf_content):
                 index_of_consecutive_spaces = text.find("  ")
                 if index_of_consecutive_spaces != -1:
                     text = text[:index_of_consecutive_spaces]
-                return text
+                return text.strip()
             return None
 
         # Extrair dados correspondentes
@@ -215,6 +219,13 @@ def extrair_dados_do_PDF(pdf_content):
         if not menu_info_dia["Sobremesa"]:
             menu_info_dia["Sobremesa"] = None
 
+        arroz_feijao_match = arroz_feijao_pattern.search(dia)
+        if arroz_feijao_match:
+            menu_info_dia["Carboidrato"] = arroz_feijao_match.group(1).capitalize()
+            menu_info_dia["Grão"] = arroz_feijao_match.group(2).capitalize() if arroz_feijao_match.group(2) else "Preto"
+        else:
+            menu_info_dia["Carboidrato"] = None
+            menu_info_dia["Grão"] = None
 
         menu_info.append(menu_info_dia)
         print(menu_info_dia)

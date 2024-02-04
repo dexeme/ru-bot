@@ -1,31 +1,22 @@
-function atualizarFront(data, cardapioPanel) {
+function atualizarFront(data, menuPanel) {
     console.log('Atualizando front...');
     const dias_da_semana = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
-    const data_atual_formatada = `${(data.getDate()+1).toString().padStart(2, '0')}/${(data.getMonth() + 1).toString().padStart(2, '0')}/${data.getFullYear()}`;
+    const data_atual_formatada = `${(data.getDate() + 1).toString().padStart(2, '0')}/${(data.getMonth() + 1).toString().padStart(2, '0')}/${data.getFullYear()}`;
     const dia_semana_atual = dias_da_semana[data.getDay()];
-    
+
     diaSemanaPlaceholder = document.getElementById('diaSemana-placeholder');
     carnePlaceholder = document.getElementById('carne-placeholder');
     if (dia_semana_atual === 'Sábado' || dia_semana_atual === 'Domingo') {
         diaSemanaPlaceholder.textContent = dia_semana_atual;
-    }
-    else if (diaSemanaPlaceholder.textContent = dia_semana_atual + '-feira') {
+    } else if (diaSemanaPlaceholder.textContent = dia_semana_atual + '-feira') {
         diaSemanaPlaceholder.textContent = dia_semana_atual + '-feira';
     } else if (carnePlaceholder === null) {
         diaSemanaPlaceholder.textContent = 'Indisponível';
     }
     // Seta o texto do placeholder do dia da semana para o dia_semana_atual
-    
-
-
 
     const diurnoButton = document.getElementById('diurno');
-    // Verifica se o botão Diurno está selecionado
-    if (diurnoButton.classList.contains('active')) {
-        diurno = true;
-    } else {
-        diurno = false;
-    }
+    diurno = diurnoButton.classList.contains('active');
 
     fetch('static/cardapio.txt')
         .then(response => response.text())
@@ -39,7 +30,6 @@ function atualizarFront(data, cardapioPanel) {
                     if (linha.includes('Data: ' + data_atual_formatada)) {
                         blocoEncontrado = true;
                     }
-
                     if (blocoEncontrado) {
                         blocoAtual += linha + '\n';
                         complementoJantar = '';
@@ -47,45 +37,52 @@ function atualizarFront(data, cardapioPanel) {
                         diaSemana = '';
                         if (linha.trim() === '') {
                             const linhasBloco = blocoAtual.split('\n');
+                            const placeholdersMapping = {
+                                "Tipo de Arroz: ": { placeholder: "carboidratoPlaceholder", variable: "carboidrato", start: 15 },
+                                "Tipo de Feijão: ": { placeholder: "graoPlaceholder", variable: "grao", start: 16 },
+                                "Carne: ": { placeholder: "carnePlaceholder", variable: "carne", start: 7 },
+                                "Carne jantar: ": { placeholder: "carnePlaceholder", variable: "carneJantar", start: 14 },
+                                "Complemento: ": { placeholder: "complementoPlaceholder", variable: "complemento", start: 13 },
+                                "Complemento jantar: ": { placeholder: "complementoPlaceholder", variable: "complementoJantar", start: 20 },
+                                "Salada 1: ": { placeholder: "salada1Placeholder", variable: "salada1", start: 10 },
+                                "Salada 2: ": { placeholder: "salada2Placeholder", variable: "salada2", start: 10 },
+                                "Molho salada: ": { placeholder: "molhoPlaceholder", variable: "molho", start: 14 },
+                                "Sobremesa: ": { placeholder: "sobremesaPlaceholder", variable: "sobremesa", start: 11 }
+                            };
+                        
                             for (const linhaBloco of linhasBloco) {
-                                if (linhaBloco.includes("Carne: ")) {
-                                    cardapioPanel.carnePlaceholder.textContent = 'Carregando...';
-                                    carne = linhaBloco.substring(7);
-                                } else if (linhaBloco.includes("Carne jantar: ")) {
-                                    cardapioPanel.carnePlaceholder.textContent = 'Carregando...';
-                                    carneJantar = linhaBloco.substring(14);
-                                } else if (linhaBloco.includes("Complemento: ")) {
-                                    cardapioPanel.complementoPlaceholder.textContent = 'Carregando...';
-                                    complemento = linhaBloco.substring(13);
-                                } else if (linhaBloco.includes("Complemento jantar: ")) {
-                                    cardapioPanel.complementoPlaceholder.textContent = 'Carregando...';
-                                    complementoJantar = linhaBloco.substring(20);
-                                } else if (linhaBloco.includes("Salada 1: ")) {
-                                    cardapioPanel.salada1Placeholder.textContent = 'Carregando...';
-                                    salada1 = linhaBloco.substring(10);
-                                } else if (linhaBloco.includes("Salada 2: ")) {
-                                    cardapioPanel.salada2Placeholder.textContent = 'Carregando...';
-                                    salada2 = linhaBloco.substring(10);
-                                } else if (linhaBloco.includes("Molho salada: ")) {
-                                    cardapioPanel.molhoPlaceholder.textContent = 'Carregando...';
-                                    molho = linhaBloco.substring(14);
-                                } else if (linhaBloco.includes("Sobremesa: ")) {
-                                    cardapioPanel.sobremesaPlaceholder.textContent = 'Carregando...';
-                                    sobremesa = linhaBloco.substring(11);
-
+                                for (const [placeholderText, { placeholder, variable, start }] of Object.entries(placeholdersMapping)) {
+                                    if (linhaBloco.includes(placeholderText)) {
+                                        menuPanel[placeholder].textContent = 'Carregando...';
+                                        window[variable] = linhaBloco.substring(start);
+                                    }
                                 }
                             }
-                            console.log(carne, carneJantar, complemento, complementoJantar, salada1, salada2, molho, sobremesa);
+                        
+                            menuItems = [carboidrato, grao, carne, carneJantar, complemento, complementoJantar, salada1, salada2, molho, sobremesa];
+                            console.log(menuItems);
 
-                            if (carne === "None" && complemento === "None" && salada1 === "None" && salada2 === "None" && molho === "None" && sobremesa === "None") {
-                                cardapioPanel.carnePlaceholder.textContent = 'Indisponível';
-                                cardapioPanel.complementoPlaceholder.textContent = 'Indisponível';
-                                cardapioPanel.salada1Placeholder.textContent = 'Indisponível';
-                                cardapioPanel.salada2Placeholder.textContent = 'Indisponível';
-                                cardapioPanel.molhoPlaceholder.textContent = 'Indisponível';
-                                cardapioPanel.sobremesaPlaceholder.textContent = 'Indisponível';
+                            if (carboidrato === "None" && grao === "None" && carne === "None" && complemento === "None" && salada1 === "None" && salada2 === "None" && molho === "None" && sobremesa === "None") {
+                                menuPanel.carboidratoPlaceholder.textContent = 'Indisponível';
+                                menuPanel.graoPlaceholder.textContent = 'Indisponível';
+                                menuPanel.carnePlaceholder.textContent = 'Indisponível';
+                                menuPanel.complementoPlaceholder.textContent = 'Indisponível';
+                                menuPanel.salada1Placeholder.textContent = 'Indisponível';
+                                menuPanel.salada2Placeholder.textContent = 'Indisponível';
+                                menuPanel.molhoPlaceholder.textContent = 'Indisponível';
+                                menuPanel.sobremesaPlaceholder.textContent = 'Indisponível';
+                            }
+
+                            const menuIsAvailable = checkIfMenuIsAvailable(menuItems);
+
+                            console.log('Menu disponível: ' + menuIsAvailable);
+
+                            if (!menuIsAvailable) {
+                                diaSemanaPlaceholder.textContent = 'Indisponível';
+                                console.log('Menu indisponível');
                                 return;
                             }
+
 
                             if (carne === "None") {
                                 carne = 'Não especificado';
@@ -112,24 +109,15 @@ function atualizarFront(data, cardapioPanel) {
                                 complemento = 'Não especificado';
                             }
 
+                            menuPanel.carboidratoPlaceholder.textContent = diurno ? carboidrato : carboidrato;
+                            menuPanel.graoPlaceholder.textContent = diurno ? grao : grao;
+                            menuPanel.carnePlaceholder.textContent = diurno ? carne : carneJantar;
+                            menuPanel.complementoPlaceholder.textContent = diurno ? complemento : complementoJantar;
+                            menuPanel.salada1Placeholder.textContent = salada1;
+                            menuPanel.salada2Placeholder.textContent = salada2;
+                            menuPanel.molhoPlaceholder.textContent = molho;
+                            menuPanel.sobremesaPlaceholder.textContent = sobremesa;
                             
-
-                            if (diurno) {
-                                cardapioPanel.carnePlaceholder.textContent = carne;
-                                cardapioPanel.complementoPlaceholder.textContent = complemento;
-                                cardapioPanel.salada1Placeholder.textContent = salada1;
-                                cardapioPanel.salada2Placeholder.textContent = salada2;
-                                cardapioPanel.molhoPlaceholder.textContent = molho;
-                                cardapioPanel.sobremesaPlaceholder.textContent = sobremesa;
-                            }
-                            else {
-                                cardapioPanel.carnePlaceholder.textContent = carneJantar;
-                                cardapioPanel.complementoPlaceholder.textContent = complementoJantar;
-                                cardapioPanel.salada1Placeholder.textContent = salada1;
-                                cardapioPanel.salada2Placeholder.textContent = salada2;
-                                cardapioPanel.molhoPlaceholder.textContent = molho;
-                                cardapioPanel.sobremesaPlaceholder.textContent = sobremesa;
-                            }
                             return;
                         }
                     }
@@ -169,18 +157,8 @@ function carregarLinks() {
 function carregarCardapio() {
     console.log('Carregando cardápio...');
     var dataEscolhida = document.getElementById('dataEscolhida').value;
-    var cardapioPanel = {
+    var menuPanel = loadMenuPanel();
 
-        carboidratoPlaceholder: document.getElementById('carboidrato-placeholder'),
-        graoPlaceholder: document.getElementById('grao-placeholder'),
-        complementoPlaceholder: document.getElementById('complemento-placeholder'),
-        carnePlaceholder: document.getElementById('carne-placeholder'),
-        salada1Placeholder: document.getElementById('salada-1-placeholder'),
-        salada2Placeholder: document.getElementById('salada-2-placeholder'),
-        molhoPlaceholder: document.getElementById('molho-placeholder'),
-        sobremesaPlaceholder: document.getElementById('sobremesa-placeholder'),
-        dataAtual: document.getElementById('data-atual')
-    };
     if (!dataEscolhida) {
         console.log('Nenhuma data escolhida. Usando data atual.');
         var hoje = new Date();
@@ -207,15 +185,17 @@ function carregarCardapio() {
     xhr.onreadystatechange = function () {
         if (xhr.readyState === XMLHttpRequest.DONE) {
             if (xhr.status === 200) {
-                atualizarFront(new Date(dataEscolhida), cardapioPanel);
+                atualizarFront(new Date(dataEscolhida), menuPanel);
             } else {
                 console.error('Erro ao carregar cardápiosdsdsdsd.');
-                cardapioPanel.carnePlaceholder.textContent = 'Indisponível';
-                cardapioPanel.complementoPlaceholder.textContent = 'Indisponível';
-                cardapioPanel.salada1Placeholder.textContent = 'Indisponível';
-                cardapioPanel.salada2Placeholder.textContent = 'Indisponível';
-                cardapioPanel.molhoPlaceholder.textContent = 'Indisponível';
-                cardapioPanel.sobremesaPlaceholder.textContent = 'Indisponível';
+                menuPanel.carboidratoPlaceholder.textContent = 'Indisponível';
+                menuPanel.graoPlaceholder.textContent = 'Indisponível';
+                menuPanel.carnePlaceholder.textContent = 'Indisponível';
+                menuPanel.complementoPlaceholder.textContent = 'Indisponível';
+                menuPanel.salada1Placeholder.textContent = 'Indisponível';
+                menuPanel.salada2Placeholder.textContent = 'Indisponível';
+                menuPanel.molhoPlaceholder.textContent = 'Indisponível';
+                menuPanel.sobremesaPlaceholder.textContent = 'Indisponível';
             }
         }
     };
@@ -303,4 +283,33 @@ function inicio() {
     document.getElementById('dataEscolhida').value = dataEscolhida;
     carregarCardapio();
 
+}
+
+function loadMenuPanel() {
+    const menuPanel = {
+        carboidratoPlaceholder: document.getElementById('carboidrato-placeholder'),
+        graoPlaceholder: document.getElementById('grao-placeholder'),
+        complementoPlaceholder: document.getElementById('complemento-placeholder'),
+        carnePlaceholder: document.getElementById('carne-placeholder'),
+        salada1Placeholder: document.getElementById('salada-1-placeholder'),
+        salada2Placeholder: document.getElementById('salada-2-placeholder'),
+        molhoPlaceholder: document.getElementById('molho-placeholder'),
+        sobremesaPlaceholder: document.getElementById('sobremesa-placeholder'),
+        dataAtual: document.getElementById('data-atual')
+    };
+
+    return menuPanel;
+}
+
+function checkIfMenuIsAvailable(menuItems) {
+    let menuIsAvailable = false;
+
+    // Varre a lista, só retorna false se todos os itens forem 'None'
+    menuItems.forEach(item => {
+        if (item !== 'None') {
+            menuIsAvailable = true;
+        }
+    });
+
+    return menuIsAvailable;
 }
