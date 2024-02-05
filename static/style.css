@@ -118,7 +118,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 #diaSemana-placeholder {
     font-size: 16px; /* Tamanho da fonte */
-    padding: 5px; /* Adiciona um espaçamento interno ao redor do texto */
     border-radius: 5px; /* Adiciona bordas arredondadas */
 }
 
