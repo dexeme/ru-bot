@@ -83,7 +83,12 @@ function atualizarFront(data, menuPanel) {
                                 return;
                             }
 
-
+                            if (carboidrato === "None") {
+                                carboidrato = 'Não especificado';
+                            }
+                            if (grao === "None") {
+                                grao = 'Não especificado';
+                            }
                             if (carne === "None") {
                                 carne = 'Não especificado';
                             }
