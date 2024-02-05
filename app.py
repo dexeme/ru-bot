@@ -222,10 +222,10 @@ def extrair_dados_do_PDF(pdf_content):
         arroz_feijao_match = arroz_feijao_pattern.search(dia)
         if arroz_feijao_match:
             menu_info_dia["Carboidrato"] = arroz_feijao_match.group(1).capitalize()
-            menu_info_dia["Grão"] = arroz_feijao_match.group(2).capitalize() if arroz_feijao_match.group(2) else "Preto"
+            menu_info_dia["Grao"] = 'Feijão ' + arroz_feijao_match.group(2).capitalize() if arroz_feijao_match.group(2) else " Feijao Preto"
         else:
             menu_info_dia["Carboidrato"] = None
-            menu_info_dia["Grão"] = None
+            menu_info_dia["Grao"] = None
 
         menu_info.append(menu_info_dia)
         print(menu_info_dia)
