@@ -13,7 +13,6 @@ function atualizarFront(data, menuPanel) {
     } else if (carnePlaceholder === null) {
         diaSemanaPlaceholder.textContent = 'Indisponível';
     }
-    // Seta o texto do placeholder do dia da semana para o dia_semana_atual
 
     const diurnoButton = document.getElementById('diurno');
     diurno = diurnoButton.classList.contains('active');
@@ -38,8 +37,8 @@ function atualizarFront(data, menuPanel) {
                         if (linha.trim() === '') {
                             const linhasBloco = blocoAtual.split('\n');
                             const placeholdersMapping = {
-                                "Tipo de Arroz: ": { placeholder: "carboidratoPlaceholder", variable: "carboidrato", start: 15 },
-                                "Tipo de Feijão: ": { placeholder: "graoPlaceholder", variable: "grao", start: 16 },
+                                "Carboidrato: ": { placeholder: "carboidratoPlaceholder", variable: "carboidrato", start: 13 },
+                                "Grao: ": { placeholder: "graoPlaceholder", variable: "grao", start: 6 },
                                 "Carne: ": { placeholder: "carnePlaceholder", variable: "carne", start: 7 },
                                 "Carne jantar: ": { placeholder: "carnePlaceholder", variable: "carneJantar", start: 14 },
                                 "Complemento: ": { placeholder: "complementoPlaceholder", variable: "complemento", start: 13 },
@@ -114,8 +113,8 @@ function atualizarFront(data, menuPanel) {
                                 complemento = 'Não especificado';
                             }
 
-                            menuPanel.carboidratoPlaceholder.textContent = diurno ? carboidrato : carboidrato;
-                            menuPanel.graoPlaceholder.textContent = diurno ? grao : grao;
+                            menuPanel.carboidratoPlaceholder.textContent = carboidrato;
+                            menuPanel.graoPlaceholder.textContent = grao;
                             menuPanel.carnePlaceholder.textContent = diurno ? carne : carneJantar;
                             menuPanel.complementoPlaceholder.textContent = diurno ? complemento : complementoJantar;
                             menuPanel.salada1Placeholder.textContent = salada1;
