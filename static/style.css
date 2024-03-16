@@ -10,6 +10,12 @@ body {
     height: 100vh;
 }
 
+.panel {
+    position: relative;
+    /* Outros estilos do painel */
+}
+
+
 /* Estilo para o input de data */
 input[type="date"] {
     appearance: none;

@@ -20,6 +20,7 @@ function atualizarFront(data, menuPanel) {
     fetch('static/cardapio.txt')
         .then(response => response.text())
         .then(text => {
+            exibirMensagemCarregado();
             let blocoAtual = '';
             let blocoEncontrado = false;
 
@@ -73,14 +74,21 @@ function atualizarFront(data, menuPanel) {
                             }
 
                             const menuIsAvailable = checkIfMenuIsAvailable(menuItems);
+                            var aviso = document.querySelector('.aviso-cardapio');
+                            if (aviso) {
+                                aviso.remove();
+                            }
 
                             console.log('Menu disponível: ' + menuIsAvailable);
 
                             if (!menuIsAvailable) {
-                                diaSemanaPlaceholder.textContent = 'Indisponível';
-                                console.log('Menu indisponível');
+                                esconderPainel();
+                                exibirAviso();  // Passa o menuPanel para posicionar o aviso corretamente
                                 return;
                             }
+
+                            esconderAviso();
+                            mostrarPainel();
 
                             if (carboidrato === "None") {
                                 carboidrato = 'Não especificado';
@@ -139,6 +147,137 @@ function atualizarFront(data, menuPanel) {
         });
 }
 
+// Função modificada para esconder apenas os elementos do cardápio
+function esconderPainel() {
+    var itemsToHide = document.querySelectorAll('#panel .list-item');
+    itemsToHide.forEach(item => {
+        item.style.visibility = 'hidden'; // Esconde cada item do cardápio
+    });
+}
+
+// Função para mostrar o painel e todos os seus elementos
+function mostrarPainel() {
+    var itemsToShow = document.querySelectorAll('#panel .list-item');
+    itemsToShow.forEach(item => {
+        item.style.visibility = 'visible'; // Mostra cada item do cardápio
+    });
+}
+
+function removerMensagemCarregado() {
+    var mensagem = document.querySelector('.mensagem-carregado');
+    if (mensagem) {
+        mensagem.remove(); // Remove a mensagem de "Carregado" do documento
+    }
+}
+
+// Função para exibir a mensagem de "Carregando"
+function exibirMensagemCarregando() {
+    removerMensagemCarregando();
+    // Verifica se a mensagem de "Carregando" já existe no documento
+    if (!document.querySelector('.mensagem-carregando')) {
+        var mensagem = document.createElement('div');
+        mensagem.textContent = 'Carregando...';
+        mensagem.classList.add('mensagem-carregando'); // Adiciona uma classe à mensagem para identificação
+        mensagem.style.position = 'fixed'; // Define a posição como fixa para que a mensagem permaneça na mesma posição ao rolar a página
+        mensagem.style.top = '20px'; // Ajusta a distância do topo da tela
+        mensagem.style.left = '50%'; // Centraliza a mensagem na horizontal
+        mensagem.style.transform = 'translateX(-50%)'; // Centraliza a mensagem na horizontal
+        mensagem.style.backgroundColor = 'rgba(0, 0, 255, 0.5)'; // Cor de fundo azul com transparência
+        mensagem.style.padding = '10px'; // Adiciona um preenchimento ao redor do texto da mensagem
+        mensagem.style.color = '#fff'; // Cor do texto da mensagem
+        mensagem.style.borderRadius = '5px'; // Adiciona bordas arredondadas à mensagem
+        document.body.appendChild(mensagem); // Adiciona a mensagem diretamente ao corpo do documento
+    }
+}
+
+
+
+// Função para exibir a mensagem de "Carregado" com símbolo de verificado
+function exibirMensagemCarregado() {
+    removerMensagemCarregando();  // Garante que a mensagem de carregando é removida
+
+    var mensagem = document.createElement('div');
+    mensagem.textContent = 'Carregado ';
+    mensagem.classList.add('mensagem-carregado');
+    
+    var simboloVerificado = document.createElement('span');
+    simboloVerificado.classList.add('icon-check');
+    simboloVerificado.innerHTML = '&#10003;'; // Símbolo de verificado
+    
+    mensagem.appendChild(simboloVerificado);
+
+    mensagem.style.position = 'fixed';
+    mensagem.style.top = '20px';
+    mensagem.style.left = '50%';
+    mensagem.style.transform = 'translateX(-50%)';
+    mensagem.style.backgroundColor = 'rgba(0, 128, 0, 0.7)'; // Cor verde com transparência
+    mensagem.style.padding = '10px';
+    mensagem.style.color = '#fff';
+    mensagem.style.borderRadius = '5px';
+
+    document.body.appendChild(mensagem);
+
+    // Remover mensagem após um certo tempo
+    setTimeout(function() {
+        mensagem.remove();
+    }, 1000); // A mensagem desaparece após 3 segundos
+}
+
+// Função para remover a mensagem de "Carregando"
+function removerMensagemCarregando() {
+    var mensagem = document.querySelector('.mensagem-carregando');
+    if (mensagem) {
+        mensagem.remove(); // Remove a mensagem de "Carregando" do documento
+    }
+}
+
+// Função para simular o carregamento de dados (substitua esta função pela sua lógica real de carregamento de dados)
+function carregarDados() {
+    exibirMensagemCarregando(); // Exibe a mensagem de "Carregando"
+    
+    setTimeout(function() {
+        removerMensagemCarregando(); // Remove a mensagem de "Carregando" após 2 segundos
+    }, 2000);
+}
+
+// Função para exibir o aviso
+function exibirAviso() {
+    var panelContainer = document.getElementById('panel');
+
+    // Remove qualquer aviso prévio para evitar duplicatas
+    var avisoExistente = panelContainer.querySelector('.aviso-cardapio');
+    if (avisoExistente) {
+        avisoExistente.remove();
+    }
+
+    var aviso = document.createElement('div');
+    aviso.textContent = 'Esse cardápio não está disponível ainda';
+    aviso.classList.add('aviso-cardapio');
+    
+    aviso.style.position = 'absolute';
+    aviso.style.top = '50%';
+    aviso.style.left = '50%';
+    aviso.style.transform = 'translate(-50%, -50%)';
+    aviso.style.backgroundColor = 'rgba(255, 0, 0, 0.7)';
+    aviso.style.padding = '20px';
+    aviso.style.color = 'white';
+    aviso.style.borderRadius = '10px';
+    aviso.style.textAlign = 'center';
+    aviso.style.width = '80%';
+    aviso.style.maxWidth = '600px';  // Ajuste conforme necessário para o seu layout
+
+    // Definindo o container para posicionar relativamente
+    panelContainer.style.position = 'relative';
+    panelContainer.style.minHeight = '200px'; // Garante que o painel tenha altura mínima para mostrar o aviso
+
+    // Anexando o aviso ao painel
+    panelContainer.appendChild(aviso);
+}
+
+function esconderAviso() {
+
+}
+
 function carregarLinks() {
     console.log('Carregando links...');
     var url = '/process';
@@ -165,20 +304,7 @@ function carregarCardapio() {
 
     if (!dataEscolhida) {
         console.log('Nenhuma data escolhida. Usando data atual.');
-        var hoje = new Date();
-        var dd = hoje.getDate();
-        var mm = hoje.getMonth() + 1; //Janeiro é 0!
-        var yyyy = hoje.getFullYear();
-
-        if (dd < 10) {
-            dd = '0' + dd;
-        }
-
-        if (mm < 10) {
-            mm = '0' + mm;
-        }
-
-        dataEscolhida = yyyy + '-' + mm + '-' + dd;
+        dataEscolhida = new Date().toISOString().split('T')[0];
     }
 
     console.log('Data escolhida: ' + dataEscolhida);
@@ -186,20 +312,16 @@ function carregarCardapio() {
     var url = '/getCardapio';
     var xhr = new XMLHttpRequest();
 
+    exibirMensagemCarregando(); // Exibe a mensagem de carregamento
+
     xhr.onreadystatechange = function () {
         if (xhr.readyState === XMLHttpRequest.DONE) {
+            removerMensagemCarregando(); // Remove a mensagem de carregamento
             if (xhr.status === 200) {
                 atualizarFront(new Date(dataEscolhida), menuPanel);
             } else {
-                console.error('Erro ao carregar cardápiosdsdsdsd.');
-                menuPanel.carboidratoPlaceholder.textContent = 'Indisponível';
-                menuPanel.graoPlaceholder.textContent = 'Indisponível';
-                menuPanel.carnePlaceholder.textContent = 'Indisponível';
-                menuPanel.complementoPlaceholder.textContent = 'Indisponível';
-                menuPanel.salada1Placeholder.textContent = 'Indisponível';
-                menuPanel.salada2Placeholder.textContent = 'Indisponível';
-                menuPanel.molhoPlaceholder.textContent = 'Indisponível';
-                menuPanel.sobremesaPlaceholder.textContent = 'Indisponível';
+                console.error('Erro ao carregar o cardápio.');
+                exibirAviso(); // Exibe um aviso em caso de erro
             }
         }
     };
@@ -285,6 +407,7 @@ function inicio() {
         dataEscolhida = yyyy + '-' + mm + '-' + dd;
     }
     document.getElementById('dataEscolhida').value = dataEscolhida;
+    carregarDados();
     carregarCardapio();
 
 }
