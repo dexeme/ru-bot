@@ -35,25 +35,17 @@ def extract_links_by_week(html_content):
         li_elements = content_element.find_all('li')
 
         for li_element in li_elements:
-            # Tentar extrair o intervalo de datas nos dois formatos usando regex
-            match = re.match(r'(\d{2})\.(\d{2})? a (\d{2})\.(\d{2})', li_element.get_text()) or \
-                    re.match(r'(\d{2})(?:\.(\w{3}))? a (\d{2})\.(\w{3})', li_element.get_text())
-
+            # Extrair o intervalo de datas usando regex
+            match = re.match(r'(\d{2})(?:\.(\w{3}))? a (\d{2})\.(\w{3})', li_element.get_text())
             meses = {}
             for i, mes in enumerate(["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"], start=1):
                 meses[mes[:3]] = str(i).zfill(2)
 
             if match:
                 inicio_dia, inicio_mes, fim_dia, fim_mes = match.groups()
-                
-                # Para o caso onde o mês do início não é especificado (formato com o mesmo mês para início e fim)
+                # inicio_mes se tiver vai ser o w{3}, se não vai ser igual ao fim_mes
                 if not inicio_mes:
                     inicio_mes = fim_mes
-                else:
-                    inicio_mes = meses[inicio_mes.lower()]  # Para o caso de meses abreviados
-
-                # Converter os meses abreviados para números se necessário
-                fim_mes = meses[fim_mes.lower()]
 
                 # Encontrar o elemento <a> dentro do elemento <li>
                 link_element = li_element.find('a')
@@ -65,8 +57,7 @@ def extract_links_by_week(html_content):
                     match_ano = re.search(r'/(\d{4})/', link)
                     ano = int(match_ano.group(1)) if match_ano else datetime.datetime.now().year
 
-                    # Montar a string data no formato "ddmmaaaa"
-                    data = "{}{}{}{}{}{}".format(inicio_dia, inicio_mes, ano, fim_dia, fim_mes, ano)
+                    data = "{}{}{}{}{}{}".format(inicio_dia, meses[inicio_mes.lower()], ano, fim_dia, meses[fim_mes.lower()], ano)
                     print(data)
 
                     # Adicionar o link ao dicionário usando a chave "data"
