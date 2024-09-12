@@ -19,7 +19,7 @@ O RU Bot simplifica o processo de verificar o cardápio do RU da UFSC. Ao acessa
 ## 🔗 Acesso ao Site
 
 Como usar
-Para utilizar o RU Bot, basta acessar o [Link oficial](https://ru.exeserver.com).
+Para utilizar o RU Bot, basta acessar o [Link oficial](https://orca-app-6s9ii.ondigitalocean.app/).
 
 ## Screenshots
 
