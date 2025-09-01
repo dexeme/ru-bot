@@ -1,176 +1,99 @@
 # coding=utf-8
 import datetime
-from flask import Flask, render_template, request
-import requests
-from bs4 import BeautifulSoup
+import os
 import json
 import re
-import pdfplumber
 
+import requests
+from bs4 import BeautifulSoup
+import pdfplumber
+from flask import Flask, render_template, request
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
-def fix_html_encoding(html_content):
-    # Substitui a representação Unicode \u00e0 pelo caractere "à" no HTML
-    html_content = html_content.replace(r'\u00e0', 'à')
-    html_content = html_content.replace(r"%C3%A0", 'à')
+# --- util e constantes ---
 
+MESES = {
+    "jan": "01", "fev": "02", "mar": "03", "abr": "04", "mai": "05", "jun": "06",
+    "jul": "07", "ago": "08", "set": "09", "out": "10", "nov": "11", "dez": "12"
+}
+
+def normalize_year(piece, fallback_year):
+    """piece pode ser '24', '2024' ou None. Usa fallback_year quando None."""
+    if not piece:
+        return int(fallback_year)
+    piece = piece.strip()
+    if len(piece) == 2:
+        # heurística: 00-69 => 2000+, 70-99 => 1900+
+        yy = int(piece)
+        return 2000 + yy if yy <= 69 else 1900 + yy
+    return int(piece)
+
+def fix_html_encoding(html_content):
+    html_content = html_content.replace(r'\u00e0', 'à').replace(r"%C3%A0", 'à')
     return html_content
 
 def extract_links_by_week(html_content):
-    # Dicionário para armazenar os links por semana
     links_by_week = {}
-
-    # Corrigir a codificação do HTML antes de passá-lo para o BeautifulSoup
     corrected_html = fix_html_encoding(html_content)
-
-    # Criar o objeto BeautifulSoup com o HTML corrigido
     soup = BeautifulSoup(corrected_html, 'html.parser')
 
-    # Encontrar o elemento com a classe 'content clearfix'
     content_element = soup.find(class_='content clearfix')
+    if not content_element:
+        return links_by_week
 
-    if content_element:
-        # Encontrar todos os elementos <li> dentro do elemento com a classe 'content clearfix'
-        li_elements = content_element.find_all('li')
+    li_elements = content_element.find_all('li')
+    for li in li_elements:
+        li_text = li.get_text()
 
-        for li_element in li_elements:
-            # Extrai o texto dentro do elemento <li>
-            li_text = li_element.get_text()
+        m = re.search(
+            r'(\d{2})[./](\d{2}|\w{3})(?:[./](\d{2,4}))?\s*(?:a\s*)?(\d{2})[./](\d{2}|\w{3})(?:[./](\d{2,4}))?',
+            li_text, re.IGNORECASE
+        )
+        if not m:
+            continue
 
-            # Extrair o intervalo de datas usando regex que aceita diferentes formatos
-            match = re.search(
-                r'(\d{2})[./](\d{2}|\w{3})(?:[./](\d{2,4}))?\s*(?:a\s*)?(\d{2})[./](\d{2}|\w{3})(?:[./](\d{2,4}))?',
-                li_text,
-                re.IGNORECASE,
-            )
+        (ini_dia, ini_mes, ini_ano_str, fim_dia, fim_mes, fim_ano_str) = m.groups()
+        ini_mes = ini_mes.zfill(2) if ini_mes.isdigit() else MESES.get(ini_mes[:3].lower(), "01")
+        fim_mes = fim_mes.zfill(2) if fim_mes.isdigit() else MESES.get(fim_mes[:3].lower(), "01")
 
-            # Mapeamento de meses por abreviação e por número
-            meses = {
-                "jan": "01",
-                "fev": "02",
-                "mar": "03",
-                "abr": "04",
-                "mai": "05",
-                "jun": "06",
-                "jul": "07",
-                "ago": "08",
-                "set": "09",
-                "out": "10",
-                "nov": "11",
-                "dez": "12",
-            }
+        a = li.find("a")
+        if not a or not a.get("href"):
+            continue
+        link = a["href"]
 
-            if match:
-                (
-                    inicio_dia,
-                    inicio_mes,
-                    _inicio_ano,
-                    fim_dia,
-                    fim_mes,
-                    _fim_ano,
-                ) = match.groups()
+        m_ano = re.search(r"/(\d{4})/", link)
+        ano_link = int(m_ano.group(1)) if m_ano else datetime.datetime.now().year
+        ini_ano = normalize_year(ini_ano_str, ano_link)
+        fim_ano = normalize_year(fim_ano_str, ini_ano)
 
-                # Verificar se os meses estão em formato numérico ou abreviado
-                # e converter para o formato numérico correto
-                if inicio_mes.isdigit():
-                    inicio_mes = inicio_mes.zfill(2)
-                else:
-                    inicio_mes = meses.get(inicio_mes[:3].lower(), "01")
-
-                if fim_mes.isdigit():
-                    fim_mes = fim_mes.zfill(2)
-                else:
-                    fim_mes = meses.get(fim_mes[:3].lower(), "01")
-
-                # Encontrar o elemento <a> dentro do elemento <li>
-                link_element = li_element.find("a")
-                if link_element:
-                    link = link_element["href"]
-
-                    # Extrair o ano do link
-                    match_ano = re.search(r"/(\d{4})/", link)
-                    ano = (
-                        int(match_ano.group(1))
-                        if match_ano
-                        else datetime.datetime.now().year
-                    )
-
-                    # Construir a chave no formato "dia_inicialmes_inicialano_fimdia_fimmes_ano"
-                    data = "{}{}{}{}{}{}".format(
-                        inicio_dia, inicio_mes, ano, fim_dia, fim_mes, ano
-                    )
-
-                    # Adicionar o link ao dicionário usando a chave "data"
-                    links_by_week[data] = link
+        key = f"{ini_dia}{ini_mes}{ini_ano:04d}{fim_dia}{fim_mes}{fim_ano:04d}"
+        links_by_week[key] = link
 
     return links_by_week
 
-@app.route('/')
-def index():
-    """
-    Renders the main page with a button for the user to click.
-    """
-    return render_template('index.html')
+# --- helpers de PDF ---
 
-@app.route('/download', methods=['POST'])
 def download_pdf(url, destination):
     response = requests.get(url, verify=False)
     
     with open(destination, 'wb') as pdf_file:
         pdf_file.write(response.content)
 
-@app.route('/extract', methods=['POST'])
 def extract_text_from_pdf(pdf_path, page_number=0):
-    # Abrir o arquivo PDF usando pdfplumber
     with pdfplumber.open(pdf_path) as pdf:
-        # Verificar se o número da página fornecido é válido
         if 0 <= page_number < len(pdf.pages):
             page = pdf.pages[page_number]
-            text = page.extract_text()
-
-            # Aplicar substituições de texto necessárias
+            text = page.extract_text() or ""
             text = re.sub(r'(\b\w+?-FEIRA\b)', r'\n\n\1', text)
             text = re.sub(r'(\bSÁBADO\b)', r'\n\n\1-FEIRA', text)
             text = re.sub(r'(\bDOMINGO\b)', r'\n\n\1-FEIRA', text)
             text = re.sub(r'^.*SEGUNDA-FEIRA', r'SEGUNDA-FEIRA', text, flags=re.DOTALL)
-        else:
-            text = ''
-
-    return text
-
-
-@app.route('/process', methods=['POST'])
-def process():
-    """
-    Performs a web scraping action when the user clicks the button.
-    """
-    try:
-        # Web scraping logic
-        website_url = 'https://ru.ufsc.br/ru/'
-        response = requests.get(website_url)
-        html_content = response.text
-
-        # Extract links by week
-        links_by_week = extract_links_by_week(html_content)
-
-        # Create a JSON object with the extracted links
-        cardapios_salvos = json.dumps(links_by_week, ensure_ascii=False, indent=2)
-
-        with open('cardapios_salvos.json', 'w') as json_file:
-            json_file.write(cardapios_salvos)   
-
-        return render_template('index.html', result="Action successful! Extracted links:\n{}".format(cardapios_salvos))
-
-
-    except Exception as e:
-        # Return an error message in case of an error
-        return render_template('index.html', result="An error occurred: {}".format(e))
+            return text
+    return ""
 
 def extrair_dados_do_PDF(pdf_content):
     menu_info = []
-
-    # Padrões de expressões regulares para extrair informações específicas
     dia_semana_pattern = re.compile(r'(\w+)\-FEIRA', re.IGNORECASE)
     data_pattern = re.compile(r'(\d{2}/\d{2}/\d{4})', re.IGNORECASE)
     carne_pattern = re.compile(r'CARNE:\s*(.+)', re.IGNORECASE)
@@ -181,191 +104,131 @@ def extrair_dados_do_PDF(pdf_content):
     salada1_pattern = re.compile(r'SALADA 1:\s*(.+)', re.IGNORECASE)
     salada2_pattern = re.compile(r'SALADA 2:\s*(.+)', re.IGNORECASE)
     molho_salada_pattern = re.compile(r'MOLHO SALADA:\s*(.+)', re.IGNORECASE)
-    sobremesa_pattern = re.compile(r'SOBREMESA:\s*(.+?)(?=\s*MOLHO)', re.IGNORECASE)
-    arroz_feijao_pattern = re.compile(r'ARROZ\s+(BRANCO\s*(?:\/\s*INTEGRAL)?)\s*\/?\s*FEIJÃO\s+(PRETO|CARIOCA|COM\s+VEGETAIS)?', re.IGNORECASE)
+    sobremesa_pattern = re.compile(r'SOBREMESA:\s*(.+?)(?=\s*MOLHO|\n|$)', re.IGNORECASE)
+    arroz_feijao_pattern = re.compile(
+        r'ARROZ\s+(BRANCO\s*(?:\/\s*INTEGRAL)?)\s*\/?\s*FEIJÃO\s+(PRETO|CARIOCA|COM\s+VEGETAIS)?',
+        re.IGNORECASE
+    )
 
+    def trim_after_double_space(match):
+        if match:
+            text = match.group(1)
+            i = text.find("  ")
+            if i != -1:
+                text = text[:i]
+            return text.strip()
+        return None
 
-
-
-    # Dividir o texto em dias
     dias = pdf_content.split('\n\n')
-
-    # Extrair informações para cada dia
     for dia in dias:
-        menu_info_dia = {}
+        d = {}
+        d["Dia da semana"] = (dia_semana_pattern.search(dia).group(1).capitalize()
+                              if dia_semana_pattern.search(dia) else None)
+        d["Data"] = (data_pattern.search(dia).group(1) if data_pattern.search(dia) else None)
+        d["Carne"] = trim_after_double_space(carne_pattern.search(dia)) or None
+        d["Carne jantar"] = (trim_after_double_space(carne_jantar_pattern.search(dia))
+                             or d["Carne"])
 
-        # Encontrar correspondências para cada padrão
-        dia_semana_match = dia_semana_pattern.search(dia)
-        data_match = data_pattern.search(dia)
-        carne_match = carne_pattern.search(dia)
-        carne_jantar_match = carne_jantar_pattern.search(dia)
-        complemento_match = complemento_pattern.search(dia)
-        complemento_almoco_match = complemento_almoco_pattern.search(dia)
-        complemento_jantar_match = complemento_jantar_pattern.search(dia)
-        salada1_match = salada1_pattern.search(dia)
-        salada2_match = salada2_pattern.search(dia)
-        molho_salada_match = molho_salada_pattern.search(dia)
-        sobremesa_match = sobremesa_pattern.search(dia)
-        arroz_feijao_match = arroz_feijao_pattern.search(dia)
+        d["Complemento"] = (trim_after_double_space(complemento_pattern.search(dia))
+                            or trim_after_double_space(complemento_almoco_pattern.search(dia))
+                            or trim_after_double_space(complemento_jantar_pattern.search(dia)))
+        d["Complemento jantar"] = (trim_after_double_space(complemento_jantar_pattern.search(dia))
+                                   or d["Complemento"])
 
-        # Função para remover texto após dois espaços consecutivos
-        def remove_text_after_consecutive_spaces(match):
-            if match:
-                text = match.group(1)
-                index_of_consecutive_spaces = text.find("  ")
-                if index_of_consecutive_spaces != -1:
-                    text = text[:index_of_consecutive_spaces]
-                return text.strip()
-            return None
+        d["Salada 1"] = trim_after_double_space(salada1_pattern.search(dia)) or None
+        d["Salada 2"] = trim_after_double_space(salada2_pattern.search(dia)) or None
+        d["Molho salada"] = trim_after_double_space(molho_salada_pattern.search(dia)) or None
+        d["Sobremesa"] = trim_after_double_space(sobremesa_pattern.search(dia)) or None
 
-        # Extrair dados correspondentes
-        menu_info_dia["Dia da semana"] = dia_semana_match.group(1).capitalize() if dia_semana_match else None
-        menu_info_dia["Data"] = data_match.group(1) if data_match else None
-        menu_info_dia["Carne"] = remove_text_after_consecutive_spaces(carne_match)
-
-        if not menu_info_dia["Carne"]:
-            menu_info_dia["Carne"] = None
-
-        menu_info_dia["Carne jantar"] = remove_text_after_consecutive_spaces(carne_jantar_match)
-        if not menu_info_dia["Carne jantar"]:
-            # Se não houver complemento jantar, copie o complemento do almoço
-            menu_info_dia["Carne jantar"] = menu_info_dia["Carne"]
-
-        menu_info_dia["Complemento"] = remove_text_after_consecutive_spaces(complemento_match)
-        if not menu_info_dia["Complemento"]:
-            # Se não houver complemento, verifique os específicos de almoço e jantar
-            menu_info_dia["Complemento"] = remove_text_after_consecutive_spaces(complemento_almoco_match)
-            if not menu_info_dia["Complemento"]:
-                menu_info_dia["Complemento"] = remove_text_after_consecutive_spaces(complemento_jantar_match)
-                # Se não houver complemento jantar, copie o complemento do almoço
-                if not menu_info_dia["Complemento"]:
-                    menu_info_dia["Complemento jantar"] = menu_info_dia["Complemento"]
-        
-        menu_info_dia["Complemento jantar"] = remove_text_after_consecutive_spaces(complemento_jantar_match)
-        if not menu_info_dia["Complemento jantar"]:
-            # Se não houver complemento jantar, copie o complemento do almoço
-            menu_info_dia["Complemento jantar"] = menu_info_dia["Complemento"]
-
-        menu_info_dia["Salada 1"] = remove_text_after_consecutive_spaces(salada1_match)
-        if not menu_info_dia["Salada 1"]:
-            menu_info_dia["Salada 1"] = None
-        menu_info_dia["Salada 2"] = remove_text_after_consecutive_spaces(salada2_match)
-        if not menu_info_dia["Salada 2"]:
-            menu_info_dia["Salada 2"] = None
-        menu_info_dia["Molho salada"] = remove_text_after_consecutive_spaces(molho_salada_match)
-        if not menu_info_dia["Molho salada"]:
-            menu_info_dia["Molho salada"] = None
-
-        menu_info_dia["Sobremesa"] = remove_text_after_consecutive_spaces(sobremesa_match)
-        if not menu_info_dia["Sobremesa"]:
-            menu_info_dia["Sobremesa"] = None
-
-        arroz_feijao_match = arroz_feijao_pattern.search(dia)
-        if arroz_feijao_match:
-            menu_info_dia["Carboidrato"] = 'Arroz ' + arroz_feijao_match.group(1).capitalize()
-            menu_info_dia["Grao"] = 'Feijão ' + arroz_feijao_match.group(2).capitalize() if arroz_feijao_match.group(2) else " Feijao Preto"
+        af = arroz_feijao_pattern.search(dia)
+        if af:
+            d["Carboidrato"] = 'Arroz ' + af.group(1).capitalize()
+            d["Grao"] = 'Feijão ' + (af.group(2).capitalize() if af.group(2) else "Preto")
         else:
-            menu_info_dia["Carboidrato"] = None
-            menu_info_dia["Grao"] = None
+            d["Carboidrato"] = None
+            d["Grao"] = None
 
-        menu_info.append(menu_info_dia)
-        print(menu_info_dia)
-
+        menu_info.append(d)
     return menu_info
+
+# --- rotas ---
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/process', methods=['POST'])
+def process():
+    try:
+        website_url = 'https://ru.ufsc.br/ru/'
+        resp = requests.get(website_url, timeout=30)
+        resp.raise_for_status()
+        links_by_week = extract_links_by_week(resp.text)
+
+        with open('cardapios_salvos.json', 'w', encoding='utf-8') as f:
+            json.dump(links_by_week, f, ensure_ascii=False, indent=2)
+
+        return render_template('index.html',
+                               result="Action successful! Extracted links:\n{}".format(
+                                   json.dumps(links_by_week, ensure_ascii=False, indent=2)))
+    except Exception as e:
+        return render_template('index.html', result=f"An error occurred: {e}")
 
 def get_user_date():
-    # Extrair a data escolhida pelo usuário
-    user_date_str = request.form.get('dataEscolhida')
-
-    return user_date_str
+    return request.form.get('dataEscolhida')
 
 def load_cardapio_atual():
-    # Salva em cardapio_atual o dicionario com as datas e links
-    with open('cardapios_salvos.json', 'r') as json_file:
-        cardapio_atual = json.load(json_file)
-
-    return cardapio_atual
+    with open('cardapios_salvos.json', 'r', encoding='utf-8') as f:
+        return json.load(f)
 
 def find_link_in_interval(cardapio_atual, user_date_str):
-    # Dividir a data usando os caracteres de hífen
-    ano, mes, dia = user_date_str.split('-')
+    ano, mes, dia = map(int, user_date_str.split('-'))
+    for key, link in cardapio_atual.items():
+        di = int(key[0:2]); mi = int(key[2:4]); ai = int(key[4:8])
+        df = int(key[8:10]); mf = int(key[10:12]); af = int(key[12:16])
 
-    # Converter as strings para inteiros
-    ano = int(ano)
-    mes = int(mes)
-    dia = int(dia)
-
-    # Encontrar o link correspondente na estrutura JSON
-    link_key = None
-    for key in cardapio_atual.keys():
-        dia_de_inicio_do_intervalo = int(key[0:2])
-        mes_de_inicio_do_intervalo = int(key[2:4])
-        ano_de_inicio_do_intervalo = int(key[4:8])
-        dia_de_fim_do_intervalo = int(key[8:10])
-        mes_de_fim_do_intervalo = int(key[10:12])
-        ano_de_fim_do_intervalo = int(key[12:16])
-
-        # Verificar se a data escolhida pelo usuário está dentro do intervalo
-        # sem usar a biblioteca datetime
-        if ano_de_inicio_do_intervalo <= ano <= ano_de_fim_do_intervalo:
-            if mes_de_inicio_do_intervalo != mes_de_fim_do_intervalo:
-                if mes_de_inicio_do_intervalo == mes:
-                    if dia_de_inicio_do_intervalo <= dia:
-                        link_key = key
-                        link = cardapio_atual[link_key]
-
-                        break
-                elif mes_de_fim_do_intervalo == mes:
-                    if dia <= dia_de_fim_do_intervalo:
-                        link_key = key
-                        link = cardapio_atual[link_key]
-                        break
-            else:
-                if mes_de_inicio_do_intervalo == mes:
-                    if dia_de_inicio_do_intervalo <= dia <= dia_de_fim_do_intervalo:
-                        link_key = key
-                        link = cardapio_atual[link_key]
-                        break
-        else:
-            continue
-
-    return link
+        # compara sem datetime
+        if ai < ano or (ai == ano and (mi < mes or (mi == mes and di <= dia))):
+            if af > ano or (af == ano and (mf > mes or (mf == mes and df >= dia))):
+                return link
+    return None
 
 def download_and_extract_pdf(link):
-    destino_do_pdf = 'pdf/cardapio.pdf'
-    download_pdf(link, destino_do_pdf)
-    pdf_content = extract_text_from_pdf(destino_do_pdf)
-    menu_info = extrair_dados_do_PDF(pdf_content)
-
-    return menu_info
+    destino = 'pdf/cardapio.pdf'
+    download_pdf(link, destino)
+    pdf_content = extract_text_from_pdf(destino)
+    return extrair_dados_do_PDF(pdf_content)
 
 def save_menu_info_to_file(menu_info):
-    with open('static/cardapio.txt', 'w', encoding='utf-8') as txt_file:
+    os.makedirs('static', exist_ok=True)
+    with open('static/cardapio.txt', 'w', encoding='utf-8') as txt:
         for menu in menu_info:
-            for key, value in menu.items():
-                txt_file.write('{}: {}\n'.format(key, value))
-            txt_file.write('\n')
+            for k, v in menu.items():
+                txt.write(f'{k}: {v}\n')
+            txt.write('\n')
 
 @app.route('/getCardapio', methods=['POST'])
 def getCardapio():
-    user_date_str = get_user_date()
+    try:
+        user_date_str = get_user_date()
+        cardapio_atual = load_cardapio_atual()
 
-    cardapio_atual = load_cardapio_atual()
+        if not user_date_str:
+            # Usa hoje
+            today = datetime.date.today()
+            user_date_str = today.strftime('%Y-%m-%d')
 
-    if not user_date_str:
-        recent_data = list(cardapio_atual.keys())[0] if cardapio_atual else None
-        if cardapio_atual:
-            user_date_str = list(cardapio_atual.keys())[0]
-        else:
-            return render_template('index.html', result="Nenhuma data disponível no cardápio.")
+        link = find_link_in_interval(cardapio_atual, user_date_str)
+        if not link:
+            return render_template('index.html',
+                                   result=f"Não há cardápio para {user_date_str} no arquivo atual. "
+                                          f"Clique para atualizar os links (Process).")
 
-    link = find_link_in_interval(cardapio_atual, user_date_str)
-
-    menu_info = download_and_extract_pdf(link)
-
-    save_menu_info_to_file(menu_info)
-
-    return render_template('index.html', result="Ação bem-sucedida! Texto extraído:\n{}".format(menu_info))
+        menu_info = download_and_extract_pdf(link)
+        save_menu_info_to_file(menu_info)
+        return render_template('index.html', result=f"Ação bem-sucedida! Texto extraído:\n{menu_info}")
+    except Exception as e:
+        return render_template('index.html', result=f"Erro ao obter cardápio: {e}")
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(ssl_context="adhoc")
