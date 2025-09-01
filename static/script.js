@@ -1,151 +1,128 @@
 function atualizarFront(data, menuPanel) {
-    console.log('Atualizando front...');
-    const dias_da_semana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
-    const data_atual_formatada = `${data.getDate().toString().padStart(2, '0')}/${(data.getMonth() + 1).toString().padStart(2, '0')}/${data.getFullYear()}`;
-    const dia_semana_atual = dias_da_semana[data.getDay()];
+  console.log('Atualizando front...');
 
-    diaSemanaPlaceholder = document.getElementById('diaSemana-placeholder');
-    carnePlaceholder = document.getElementById('carne-placeholder');
+  // 0=Dom, 1=Seg, ...
+  const dias_da_semana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+
+  // Data no formato dd/mm/yyyy (local, sem usar toISOString)
+  const dd = String(data.getDate()).padStart(2, '0');
+  const mm = String(data.getMonth() + 1).padStart(2, '0');
+  const yyyy = data.getFullYear();
+  const data_atual_formatada = `${dd}/${mm}/${yyyy}`;
+
+  // "Hoje é ..."
+  const dia_semana_atual = dias_da_semana[data.getDay()];
+  const diaSemanaPlaceholder = document.getElementById('diaSemana-placeholder');
+  if (diaSemanaPlaceholder) {
     if (dia_semana_atual === 'Sábado' || dia_semana_atual === 'Domingo') {
-        diaSemanaPlaceholder.textContent = dia_semana_atual;
-    } else if (diaSemanaPlaceholder.textContent = dia_semana_atual + '-feira') {
-        diaSemanaPlaceholder.textContent = dia_semana_atual + '-feira';
-    } else if (carnePlaceholder === null) {
-        diaSemanaPlaceholder.textContent = 'Indisponível';
+      diaSemanaPlaceholder.textContent = dia_semana_atual;
+    } else {
+      diaSemanaPlaceholder.textContent = `${dia_semana_atual}-feira`;
     }
+  }
 
-    const diurnoButton = document.getElementById('diurno');
-    diurno = diurnoButton.classList.contains('active');
+  // Almoço/Jantar
+  const diurnoButton = document.getElementById('diurno');
+  const diurno = !!(diurnoButton && diurnoButton.classList.contains('active'));
 
-    fetch('static/cardapio.txt')
-        .then(response => response.text())
-        .then(text => {
-            exibirMensagemCarregado();
-            let blocoAtual = '';
-            let blocoEncontrado = false;
+  // Função interna: limpar tudo em branco
+  function clearAll() {
+    if (menuPanel) {
+      menuPanel.carboidratoPlaceholder && (menuPanel.carboidratoPlaceholder.textContent = '');
+      menuPanel.graoPlaceholder && (menuPanel.graoPlaceholder.textContent = '');
+      menuPanel.carnePlaceholder && (menuPanel.carnePlaceholder.textContent = '');
+      menuPanel.complementoPlaceholder && (menuPanel.complementoPlaceholder.textContent = '');
+      menuPanel.salada1Placeholder && (menuPanel.salada1Placeholder.textContent = '');
+      menuPanel.salada2Placeholder && (menuPanel.salada2Placeholder.textContent = '');
+      menuPanel.molhoPlaceholder && (menuPanel.molhoPlaceholder.textContent = '');
+      menuPanel.sobremesaPlaceholder && (menuPanel.sobremesaPlaceholder.textContent = '');
+    }
+    // Se existirem helpers visuais, use-os (são opcionais)
+    try { typeof esconderPainel === 'function' && esconderPainel(); } catch(e){}
+    try { typeof esconderAviso === 'function' && esconderAviso(); } catch(e){}
+  }
 
-            const blocos = text.split('Dia da Semana:');
-            for (const bloco of blocos) {
-                for (const linha of bloco.split('\n')) {
-                    if (linha.includes('Data: ' + data_atual_formatada)) {
-                        blocoEncontrado = true;
-                    }
-                    if (blocoEncontrado) {
-                        blocoAtual += linha + '\n';
-                        complementoJantar = '';
-                        carneJantar = '';
-                        diaSemana = '';
-                        if (linha.trim() === '') {
-                            const linhasBloco = blocoAtual.split('\n');
-                            const placeholdersMapping = {
-                                "Carboidrato: ": { placeholder: "carboidratoPlaceholder", variable: "carboidrato", start: 13 },
-                                "Grao: ": { placeholder: "graoPlaceholder", variable: "grao", start: 6 },
-                                "Carne: ": { placeholder: "carnePlaceholder", variable: "carne", start: 7 },
-                                "Carne jantar: ": { placeholder: "carnePlaceholder", variable: "carneJantar", start: 14 },
-                                "Complemento: ": { placeholder: "complementoPlaceholder", variable: "complemento", start: 13 },
-                                "Complemento jantar: ": { placeholder: "complementoPlaceholder", variable: "complementoJantar", start: 20 },
-                                "Salada 1: ": { placeholder: "salada1Placeholder", variable: "salada1", start: 10 },
-                                "Salada 2: ": { placeholder: "salada2Placeholder", variable: "salada2", start: 10 },
-                                "Molho salada: ": { placeholder: "molhoPlaceholder", variable: "molho", start: 14 },
-                                "Sobremesa: ": { placeholder: "sobremesaPlaceholder", variable: "sobremesa", start: 11 }
-                            };
-                        
-                            for (const linhaBloco of linhasBloco) {
-                                for (const [placeholderText, { placeholder, variable, start }] of Object.entries(placeholdersMapping)) {
-                                    if (linhaBloco.includes(placeholderText)) {
-                                        menuPanel[placeholder].textContent = 'Carregando...';
-                                        window[variable] = linhaBloco.substring(start);
-                                    }
-                                }
-                            }
-                        
-                            menuItems = [carboidrato, grao, carne, carneJantar, complemento, complementoJantar, salada1, salada2, molho, sobremesa];
-                            console.log(menuItems);
+  // Normalizador: "None" ou vazio -> ''
+  const norm = v => (v && v !== 'None' ? v : '');
 
-                            if (carboidrato === "None" && grao === "None" && carne === "None" && complemento === "None" && salada1 === "None" && salada2 === "None" && molho === "None" && sobremesa === "None") {
-                                menuPanel.carboidratoPlaceholder.textContent = 'Indisponível';
-                                menuPanel.graoPlaceholder.textContent = 'Indisponível';
-                                menuPanel.carnePlaceholder.textContent = 'Indisponível';
-                                menuPanel.complementoPlaceholder.textContent = 'Indisponível';
-                                menuPanel.salada1Placeholder.textContent = 'Indisponível';
-                                menuPanel.salada2Placeholder.textContent = 'Indisponível';
-                                menuPanel.molhoPlaceholder.textContent = 'Indisponível';
-                                menuPanel.sobremesaPlaceholder.textContent = 'Indisponível';
-                            }
+  fetch('static/cardapio.txt')
+    .then(r => r.text())
+    .then(text => {
+      try { typeof exibirMensagemCarregado === 'function' && exibirMensagemCarregado(); } catch(e){}
 
-                            const menuIsAvailable = checkIfMenuIsAvailable(menuItems);
-                            var aviso = document.querySelector('.aviso-cardapio');
-                            if (aviso) {
-                                aviso.remove();
-                            }
+      // Divide pelos blocos que começam com este rótulo EXATO gerado pelo backend
+      const blocos = text.split('Dia da semana:');
+      let blocoDoDia = null;
 
-                            console.log('Menu disponível: ' + menuIsAvailable);
+      for (const bloco of blocos) {
+        if (!bloco.trim()) continue;
+        const linhas = bloco.split('\n');
+        const temData = linhas.some(l => l.includes('Data: ' + data_atual_formatada));
+        if (temData) {
+          blocoDoDia = linhas;
+          break;
+        }
+      }
 
-                            if (!menuIsAvailable) {
-                                esconderPainel();
-                                exibirAviso();  // Passa o menuPanel para posicionar o aviso corretamente
-                                return;
-                            }
+      // Se não achou, deixa tudo em branco e sai
+      if (!blocoDoDia) {
+        clearAll();
+        return;
+      }
 
-                            esconderAviso();
-                            mostrarPainel();
+      // Monta mapa "Chave: Valor"
+      const map = {};
+      for (const linha of blocoDoDia) {
+        const i = linha.indexOf(':');
+        if (i > -1) {
+          const chave = linha.slice(0, i).trim();
+          const valor = linha.slice(i + 1).trim();
+          map[chave] = valor;
+        }
+      }
 
-                            if (carboidrato === "None") {
-                                carboidrato = 'Não especificado';
-                            }
-                            if (grao === "None") {
-                                grao = 'Não especificado';
-                            }
-                            if (carne === "None") {
-                                carne = 'Não especificado';
-                            }
-                            if (complemento === "None" && complementoJantar === "None") {
-                                complemento = 'Não especificado';
-                            }
-                            if (salada1 === "None") {
-                                salada1 = 'Não especificado';
-                            }
-                            if (salada2 === "None") {
-                                salada2 = 'Não especificado';
-                            }
-                            if (molho === "None") {
-                                molho = 'Não especificado';
-                            }
-                            if (sobremesa === "None") {
-                                sobremesa = 'Não especificado';
-                            }
-                            if (carneJantar === "None" && carne === "None") {
-                                carne = 'Não especificado';
-                            }
-                            if (complementoJantar === "None" && complemento == "None") {
-                                complemento = 'Não especificado';
-                            }
+      // Extrai e normaliza campos
+      const carboidrato       = norm(map['Carboidrato']);
+      const grao              = norm(map['Grao']);
+      const carne             = norm(map['Carne']);
+      const carneJantar       = norm(map['Carne jantar']);
+      const complemento       = norm(map['Complemento']);
+      const complementoJantar = norm(map['Complemento jantar']);
+      const salada1           = norm(map['Salada 1']);
+      const salada2           = norm(map['Salada 2']);
+      const molho             = norm(map['Molho salada']);
+      const sobremesa         = norm(map['Sobremesa']);
 
-                            menuPanel.carboidratoPlaceholder.textContent = carboidrato;
-                            menuPanel.graoPlaceholder.textContent = grao;
-                            menuPanel.carnePlaceholder.textContent = diurno ? carne : carneJantar;
-                            menuPanel.complementoPlaceholder.textContent = diurno ? complemento : complementoJantar;
-                            menuPanel.salada1Placeholder.textContent = salada1;
-                            menuPanel.salada2Placeholder.textContent = salada2;
-                            menuPanel.molhoPlaceholder.textContent = molho;
-                            menuPanel.sobremesaPlaceholder.textContent = sobremesa;
-                            
-                            return;
-                        }
-                    }
-                }
-            }
+      // Se todos vazios, limpa e sai
+      const menuItems = [carboidrato, grao, carne, complemento, salada1, salada2, molho, sobremesa];
+      const temAlgum = menuItems.some(v => v && v.trim() !== '');
+      if (!temAlgum) {
+        clearAll();
+        return;
+      }
 
-            if (!blocoEncontrado) {
-                console.log(`Não há cardápio disponível para ${dia_semana_atual}, ${data_atual_formatada}.`);
-            }
-        })
-        .catch(error => {
-            console.error('Erro ao carregar o cardápiossssssss:', error);
-            diaSemanaPlaceholder.textContent = 'Indisponível';
+      // Mostra painel se houver helpers (opcional)
+      try { typeof mostrarPainel === 'function' && mostrarPainel(); } catch(e){}
+      try { typeof esconderAviso === 'function' && esconderAviso(); } catch(e){}
 
-        });
+      // Preenche placeholders (diurno=almoço, noturno=jantar)
+      if (menuPanel) {
+        menuPanel.carboidratoPlaceholder && (menuPanel.carboidratoPlaceholder.textContent = carboidrato);
+        menuPanel.graoPlaceholder        && (menuPanel.graoPlaceholder.textContent        = grao);
+        menuPanel.carnePlaceholder       && (menuPanel.carnePlaceholder.textContent       = diurno ? (carne || '') : (carneJantar || ''));
+        menuPanel.complementoPlaceholder && (menuPanel.complementoPlaceholder.textContent = diurno ? (complemento || '') : (complementoJantar || ''));
+        menuPanel.salada1Placeholder     && (menuPanel.salada1Placeholder.textContent     = salada1);
+        menuPanel.salada2Placeholder     && (menuPanel.salada2Placeholder.textContent     = salada2);
+        menuPanel.molhoPlaceholder       && (menuPanel.molhoPlaceholder.textContent       = molho);
+        menuPanel.sobremesaPlaceholder   && (menuPanel.sobremesaPlaceholder.textContent   = sobremesa);
+      }
+    })
+    .catch(err => {
+      console.error('Erro ao carregar o cardápio:', err);
+      clearAll(); // em erro também fica tudo em branco
+    });
 }
+
 
 // Função modificada para esconder apenas os elementos do cardápio
 function esconderPainel() {
@@ -426,6 +403,23 @@ function loadMenuPanel() {
 
     return menuPanel;
 }
+
+function clearMenuPanel(menuPanel) {
+  // limpa os itens do painel
+  menuPanel.carboidratoPlaceholder.textContent = '';
+  menuPanel.graoPlaceholder.textContent = '';
+  menuPanel.carnePlaceholder.textContent = '';
+  menuPanel.complementoPlaceholder.textContent = '';
+  menuPanel.salada1Placeholder.textContent = '';
+  menuPanel.salada2Placeholder.textContent = '';
+  menuPanel.molhoPlaceholder.textContent = '';
+  menuPanel.sobremesaPlaceholder.textContent = '';
+
+  // limpa o “Hoje é …”
+  const diaSemanaPlaceholder = document.getElementById('diaSemana-placeholder');
+  if (diaSemanaPlaceholder) diaSemanaPlaceholder.textContent = '';
+}
+
 
 function checkIfMenuIsAvailable(menuItems) {
     let menuIsAvailable = false;
