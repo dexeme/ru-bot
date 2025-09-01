@@ -35,53 +35,76 @@ def extract_links_by_week(html_content):
         li_elements = content_element.find_all('li')
 
         for li_element in li_elements:
-            # Extrair o intervalo de datas usando regex (novo formato com ponto ou antigo com mês abreviado)
-            match = re.match(r'(\d{2})(?:\.(\d{2}|\w{3}))? a (\d{2})\.(\d{2}|\w{3})', li_element.get_text())
-            
+            # Extrai o texto dentro do elemento <li>
+            li_text = li_element.get_text()
+
+            # Extrair o intervalo de datas usando regex que aceita diferentes formatos
+            match = re.search(
+                r'(\d{2})[./](\d{2}|\w{3})(?:[./](\d{2,4}))?\s*(?:a\s*)?(\d{2})[./](\d{2}|\w{3})(?:[./](\d{2,4}))?',
+                li_text,
+                re.IGNORECASE,
+            )
+
             # Mapeamento de meses por abreviação e por número
-            meses = { 
-                "jan": "01", "fev": "02", "mar": "03", "abr": "04", "mai": "05", "jun": "06",
-                "jul": "07", "ago": "08", "set": "09", "out": "10", "nov": "11", "dez": "12"
+            meses = {
+                "jan": "01",
+                "fev": "02",
+                "mar": "03",
+                "abr": "04",
+                "mai": "05",
+                "jun": "06",
+                "jul": "07",
+                "ago": "08",
+                "set": "09",
+                "out": "10",
+                "nov": "11",
+                "dez": "12",
             }
 
             if match:
-                inicio_dia, inicio_mes, fim_dia, fim_mes = match.groups()
+                (
+                    inicio_dia,
+                    inicio_mes,
+                    _inicio_ano,
+                    fim_dia,
+                    fim_mes,
+                    _fim_ano,
+                ) = match.groups()
 
-                # Se o mês de início não foi especificado, assuma o mês do fim
-                if not inicio_mes:
-                    inicio_mes = fim_mes
-
-                # Verifica se o mês está em formato numérico ou abreviado
-                # e converte para o formato numérico correto
+                # Verificar se os meses estão em formato numérico ou abreviado
+                # e converter para o formato numérico correto
                 if inicio_mes.isdigit():
-                    inicio_mes = inicio_mes.zfill(2)  # Garantir que seja um formato de dois dígitos
+                    inicio_mes = inicio_mes.zfill(2)
                 else:
-                    inicio_mes = meses.get(inicio_mes[:3].lower(), '01')
+                    inicio_mes = meses.get(inicio_mes[:3].lower(), "01")
 
                 if fim_mes.isdigit():
-                    fim_mes = fim_mes.zfill(2)  # Garantir que seja um formato de dois dígitos
+                    fim_mes = fim_mes.zfill(2)
                 else:
-                    fim_mes = meses.get(fim_mes[:3].lower(), '01')
+                    fim_mes = meses.get(fim_mes[:3].lower(), "01")
 
                 # Encontrar o elemento <a> dentro do elemento <li>
-                link_element = li_element.find('a')
+                link_element = li_element.find("a")
                 if link_element:
-                    # Corrigir a codificação do link usando a biblioteca html
-                    link = link_element['href']
+                    link = link_element["href"]
 
                     # Extrair o ano do link
-                    match_ano = re.search(r'/(\d{4})/', link)
-                    ano = int(match_ano.group(1)) if match_ano else datetime.datetime.now().year
+                    match_ano = re.search(r"/(\d{4})/", link)
+                    ano = (
+                        int(match_ano.group(1))
+                        if match_ano
+                        else datetime.datetime.now().year
+                    )
 
                     # Construir a chave no formato "dia_inicialmes_inicialano_fimdia_fimmes_ano"
-                    data = "{}{}{}{}{}{}".format(inicio_dia, inicio_mes, ano, fim_dia, fim_mes, ano)
-                    print(data)
+                    data = "{}{}{}{}{}{}".format(
+                        inicio_dia, inicio_mes, ano, fim_dia, fim_mes, ano
+                    )
 
                     # Adicionar o link ao dicionário usando a chave "data"
                     links_by_week[data] = link
 
     return links_by_week
-
 
 @app.route('/')
 def index():
