@@ -14,61 +14,103 @@ app = Flask(__name__, static_folder='static', template_folder='templates')
 # --- util e constantes ---
 
 MESES = {
-    "jan": "01", "fev": "02", "mar": "03", "abr": "04", "mai": "05", "jun": "06",
-    "jul": "07", "ago": "08", "set": "09", "out": "10", "nov": "11", "dez": "12"
+    "jan": "01",
+    "fev": "02",
+    "mar": "03",
+    "abr": "04",
+    "mai": "05",
+    "jun": "06",
+    "jul": "07",
+    "ago": "08",
+    "set": "09",
+    "out": "10",
+    "nov": "11",
+    "dez": "12",
 }
 
-def normalize_year(piece, fallback_year):
-    """piece pode ser '24', '2024' ou None. Usa fallback_year quando None."""
-    if not piece:
-        return int(fallback_year)
-    piece = piece.strip()
-    if len(piece) == 2:
-        # heurística: 00-69 => 2000+, 70-99 => 1900+
-        yy = int(piece)
-        return 2000 + yy if yy <= 69 else 1900 + yy
-    return int(piece)
+
 
 def fix_html_encoding(html_content):
     html_content = html_content.replace(r'\u00e0', 'à').replace(r"%C3%A0", 'à')
     return html_content
 
+
+
+def normalize_year(year_str, fallback):
+    if year_str:
+        year = int(year_str)
+        if year < 100:
+            year += 2000
+        return year
+    return fallback
+
+
+
+
+
 def extract_links_by_week(html_content):
+    # Dicionário para armazenar os links por semana
     links_by_week = {}
+
+    # Corrigir a codificação do HTML antes de passá-lo para o BeautifulSoup
     corrected_html = fix_html_encoding(html_content)
+
+    # Criar o objeto BeautifulSoup com o HTML corrigido
     soup = BeautifulSoup(corrected_html, 'html.parser')
 
+    # Encontrar o elemento com a classe 'content clearfix'
     content_element = soup.find(class_='content clearfix')
-    if not content_element:
-        return links_by_week
 
-    li_elements = content_element.find_all('li')
-    for li in li_elements:
-        li_text = li.get_text()
+    if content_element:
+        # Tentar capturar o ano exibido no conteúdo (ex.: "2025") para usar como
+        # ano padrão quando o texto das datas ou o link não informarem o ano.
+        year_match = re.search(r"\b(20\d{2})\b", content_element.get_text())
+        page_year = int(year_match.group(1)) if year_match else datetime.datetime.now().year
 
-        m = re.search(
-            r'(\d{2})[./](\d{2}|\w{3})(?:[./](\d{2,4}))?\s*(?:a\s*)?(\d{2})[./](\d{2}|\w{3})(?:[./](\d{2,4}))?',
-            li_text, re.IGNORECASE
-        )
-        if not m:
-            continue
+        # Encontrar todos os elementos <li> dentro do elemento com a classe 'content clearfix'
+        li_elements = content_element.find_all('li')
 
-        (ini_dia, ini_mes, ini_ano_str, fim_dia, fim_mes, fim_ano_str) = m.groups()
-        ini_mes = ini_mes.zfill(2) if ini_mes.isdigit() else MESES.get(ini_mes[:3].lower(), "01")
-        fim_mes = fim_mes.zfill(2) if fim_mes.isdigit() else MESES.get(fim_mes[:3].lower(), "01")
+        for li_element in li_elements:
+            # Extrai o texto dentro do elemento <li>
+            li_text = li_element.get_text()
 
-        a = li.find("a")
-        if not a or not a.get("href"):
-            continue
-        link = a["href"]
+            # Extrair o intervalo de datas usando regex que aceita diferentes formatos
+            match = re.search(
+                r'(\d{2})[./](\d{2}|\w{3})(?:[./](\d{2,4}))?\s*(?:a\s*)?(\d{2})[./](\d{2}|\w{3})(?:[./](\d{2,4}))?',
+                li_text,
+                re.IGNORECASE,
+            )
+            if match:
+                (
+                    inicio_dia,
+                    inicio_mes,
+                    inicio_ano_str,
+                    fim_dia,
+                    fim_mes,
+                    fim_ano_str,
+                ) = match.groups()
 
-        m_ano = re.search(r"/(\d{4})/", link)
-        ano_link = int(m_ano.group(1)) if m_ano else datetime.datetime.now().year
-        ini_ano = normalize_year(ini_ano_str, ano_link)
-        fim_ano = normalize_year(fim_ano_str, ini_ano)
+                inicio_mes = inicio_mes.zfill(2) if inicio_mes.isdigit() else MESES.get(inicio_mes[:3].lower(), "01")
+                fim_mes = fim_mes.zfill(2) if fim_mes.isdigit() else MESES.get(fim_mes[:3].lower(), "01")
 
-        key = f"{ini_dia}{ini_mes}{ini_ano:04d}{fim_dia}{fim_mes}{fim_ano:04d}"
-        links_by_week[key] = link
+                # Encontrar o elemento <a> dentro do elemento <li>
+                link_element = li_element.find("a")
+                if link_element:
+                    link = link_element["href"]
+
+                    # O texto do link pode apontar para um diretório antigo (ex.: 2012).
+                    # Por isso usamos o ano exibido na página como base, aplicando a
+                    # normalização apenas quando o texto da data traz algum ano.
+                    inicio_ano = normalize_year(inicio_ano_str, page_year)
+                    fim_ano = normalize_year(fim_ano_str, inicio_ano)
+
+                    # Quando o intervalo atravessa o fim de ano (ex.: 28.12 a 03.01)
+                    # e o ano final não foi especificado, assume-se o ano seguinte.
+                    if not fim_ano_str and inicio_mes == '12' and fim_mes == '01':
+                        fim_ano += 1
+
+                    data = f"{inicio_dia}{inicio_mes}{inicio_ano:04d}{fim_dia}{fim_mes}{fim_ano:04d}"
+                    links_by_week[data] = link
 
     return links_by_week
 

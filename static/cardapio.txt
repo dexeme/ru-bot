@@ -1,77 +1,91 @@
 Dia da semana: Segunda
-Data: 29/01/2024
-Carne: Sobrecoxa de frango
-Carne jantar: Sobrecoxa de frango
-Complemento: Lentilha refogada
-Complemento jantar: Lentilha refogada
-Salada 1: Chicória
-Salada 2: Cenoura
-Molho salada: Molho de ervas
-Sobremesa: Mamão
+Data: 01/09/2025
+Carne: Sobrecoxa de frango com ervas
+Carne jantar: Sobrecoxa de frango com ervas
+Complemento: Chuchu refogado
+Complemento jantar: Chuchu refogado
+Salada 1: Repolho roxo
+Salada 2: Cenoura ralada
+Molho salada: Vinagrete
+Sobremesa: Iogurte
+Carboidrato: None
+Grao: None
 
 Dia da semana: Terça
-Data: 30/01/2024
-Carne: Picadinho de carne
-Carne jantar: Picadinho de carne
-Complemento: Couve-flor
-Complemento jantar: Couve-flor
+Data: 02/09/2025
+Carne: None
+Carne jantar: None
+Complemento: Brócolis cozido
+Complemento jantar: Brócolis cozido
 Salada 1: Chicória
-Salada 2: Rabanete
-Molho salada: Vinagrete
-Sobremesa: Melão
+Salada 2: Beterraba
+Molho salada: Molho de mostarda
+Sobremesa: Abacaxi
+Carboidrato: None
+Grao: None
 
 Dia da semana: Quarta
-Data: 31/01/2024
-Carne: Filé mignon suíno acebolado
-Carne jantar: Filé mignon suíno acebolado
-Complemento: Macarrão integral ao alho e óleo
-Complemento jantar: Macarrão integral ao alho e óleo
-Salada 1: Agrião
-Salada 2: Cenoura
-Molho salada: Molho de mostarda
-Sobremesa: Banana
+Data: 03/09/2025
+Carne: Filé mignon suíno à portuguesa
+Carne jantar: Filé mignon suíno à portuguesa
+Complemento: Abóbora cozida
+Complemento jantar: Abóbora cozida
+Salada 1: Couve
+Salada 2: Pepino
+Molho salada: Vinagrete
+Sobremesa: Mamão
+Carboidrato: None
+Grao: None
 
 Dia da semana: Quinta
-Data: 01/02/2024
-Carne: Bife acebolado
-Carne jantar: Bife acebolado
-Complemento: Mandioquinha
-Complemento jantar: Mandioquinha
-Salada 1: Alface
-Salada 2: Pepino
-Molho salada: Molho de ervas
-Sobremesa: Melão
+Data: 04/09/2025
+Carne: Iscas de carne aceboladas ao molho barbecue
+Carne jantar: Iscas de carne aceboladas ao molho barbecue
+Complemento: Couve flor cozida
+Complemento jantar: Couve flor cozida
+Salada 1: Agrião
+Salada 2: Cenoura ralada
+Molho salada: Molho de mostarda
+Sobremesa: Laranja
+Carboidrato: None
+Grao: None
 
 Dia da semana: Sexta
-Data: 02/02/2024
-Carne: Estrogonofe de frango
-Carne jantar: Estrogonofe de frango
-Complemento: Batata palha
-Complemento jantar: Batata palha
-Salada 1: Rúcula
+Data: 05/09/2025
+Carne: Bife acebolado
+Carne jantar: Bife acebolado
+Complemento: Farofa com azeitonas
+Complemento jantar: Farofa com azeitonas
+Salada 1: Alface
 Salada 2: Rabanete
-Molho salada: Molho de mostarda
-Sobremesa: Banana
+Molho salada: Molho de ervas
+Sobremesa: Maçã
+Carboidrato: None
+Grao: None
 
 Dia da semana: Sábado
-Data: 03/02/2024
-Carne: None
-Carne jantar: None
-Complemento: None
-Complemento jantar: None
-Salada 1: None
-Salada 2: None
-Molho salada: None
-Sobremesa: None
+Data: 06/09/2025
+Carne: Estrogonofe de carne
+Carne jantar: Estrogonofe de carne
+Complemento: Batata palha
+Complemento jantar: Batata palha
+Salada 1: Repolho
+Salada 2: Tabule
+Molho salada: Molho de mostarda
+Sobremesa: Mamão
+Carboidrato: None
+Grao: None
 
 Dia da semana: Domingo
-Data: 04/02/2024
-Carne: None
-Carne jantar: None
-Complemento: None
-Complemento jantar: None
+Data: 07/09/2025
+Carne: Risoto de frango
+Carne jantar: Risoto de frango
+Complemento: Mandioquinha cozida
+Complemento jantar: Mandioquinha cozida
 Salada 1: None
 Salada 2: None
-Molho salada: None
-Sobremesa: None
+Molho salada: Molho de ervas
+Sobremesa: Gelatina
+Carboidrato: None
+Grao: None
 
