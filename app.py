@@ -44,10 +44,6 @@ def normalize_year(year_str, fallback):
         return year
     return fallback
 
-
-
-
-
 def extract_links_by_week(html_content):
     # Dicionário para armazenar os links por semana
     links_by_week = {}

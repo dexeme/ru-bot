@@ -1,7 +1,7 @@
 function atualizarFront(data, menuPanel) {
     console.log('Atualizando front...');
-    const dias_da_semana = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
-    const data_atual_formatada = `${(data.getDate() + 1).toString().padStart(2, '0')}/${(data.getMonth() + 1).toString().padStart(2, '0')}/${data.getFullYear()}`;
+    const dias_da_semana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+    const data_atual_formatada = `${data.getDate().toString().padStart(2, '0')}/${(data.getMonth() + 1).toString().padStart(2, '0')}/${data.getFullYear()}`;
     const dia_semana_atual = dias_da_semana[data.getDay()];
 
     diaSemanaPlaceholder = document.getElementById('diaSemana-placeholder');
@@ -304,10 +304,17 @@ function carregarCardapio() {
 
     if (!dataEscolhida) {
         console.log('Nenhuma data escolhida. Usando data atual.');
-        dataEscolhida = new Date().toISOString().split('T')[0];
+        const hoje = new Date();
+        const ano = hoje.getFullYear();
+        const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+        const dia = String(hoje.getDate()).padStart(2, '0');
+        dataEscolhida = `${ano}-${mes}-${dia}`;
     }
 
     console.log('Data escolhida: ' + dataEscolhida);
+
+    const [ano, mes, dia] = dataEscolhida.split('-');
+    const dataObj = new Date(ano, mes - 1, dia);
 
     var url = '/getCardapio';
     var xhr = new XMLHttpRequest();
@@ -318,7 +325,7 @@ function carregarCardapio() {
         if (xhr.readyState === XMLHttpRequest.DONE) {
             removerMensagemCarregando(); // Remove a mensagem de carregamento
             if (xhr.status === 200) {
-                atualizarFront(new Date(dataEscolhida), menuPanel);
+                atualizarFront(dataObj, menuPanel);
             } else {
                 console.error('Erro ao carregar o cardápio.');
                 exibirAviso(); // Exibe um aviso em caso de erro
@@ -350,34 +357,26 @@ function toggleActiveClass() {
     });
 
     document.getElementById('proximo').addEventListener('click', function() {
-        // Obtém a data selecionada no input
         var dataEscolhida = document.getElementById('dataEscolhida').value;
-        
-        // Cria um objeto Date com a data selecionada
-        var data = new Date(dataEscolhida);
-        
-        // Adiciona 1 dia à data
+        var [ano, mes, dia] = dataEscolhida.split('-');
+        var data = new Date(ano, mes - 1, dia);
         data.setDate(data.getDate() + 1);
-        
-        // Atualiza o valor do input com a nova data
-        document.getElementById('dataEscolhida').value = data.toISOString().split('T')[0];
-
+        var novoAno = data.getFullYear();
+        var novoMes = String(data.getMonth() + 1).padStart(2, '0');
+        var novoDia = String(data.getDate()).padStart(2, '0');
+        document.getElementById('dataEscolhida').value = `${novoAno}-${novoMes}-${novoDia}`;
         carregarCardapio();
     });
-    
-    document.getElementById('anterior').addEventListener('click', function() {
-        // Obtém a data selecionada no input
-        var dataEscolhida = document.getElementById('dataEscolhida').value;
-        
-        // Cria um objeto Date com a data selecionada
-        var data = new Date(dataEscolhida);
-        
-        // Subtrai 1 dia da data
-        data.setDate(data.getDate() - 1);
-        
-        // Atualiza o valor do input com a nova data
-        document.getElementById('dataEscolhida').value = data.toISOString().split('T')[0];
 
+    document.getElementById('anterior').addEventListener('click', function() {
+        var dataEscolhida = document.getElementById('dataEscolhida').value;
+        var [ano, mes, dia] = dataEscolhida.split('-');
+        var data = new Date(ano, mes - 1, dia);
+        data.setDate(data.getDate() - 1);
+        var novoAno = data.getFullYear();
+        var novoMes = String(data.getMonth() + 1).padStart(2, '0');
+        var novoDia = String(data.getDate()).padStart(2, '0');
+        document.getElementById('dataEscolhida').value = `${novoAno}-${novoMes}-${novoDia}`;
         carregarCardapio();
     });
     
